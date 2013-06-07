@@ -1,0 +1,11 @@
+AuthName "Restricted Area" 
+AuthType Basic 
+AuthUserFile /home/mehdi/Mehdi/Programmes/www/protected/.htpasswd 
+AuthGroupFile /dev/null 
+require valid-user 
+
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   RewriteRule    ^$ app/webroot/    [L]
+   RewriteRule    (.*) app/webroot/$1 [L]
+</IfModule>
