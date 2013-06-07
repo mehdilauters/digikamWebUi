@@ -48,22 +48,12 @@ if(isset($image['ImageInformation']))
   ?>
   <div>&nbsp;</div>
       <div class="tags" >
-      <ul>
+      <ul id="tagsPhoto_<?php echo $data['id'] ?>">
      <?php
 
      foreach( $image['ImageTag'] as $tag)
      {
-     ?>
-<li class="tag" >
-     <a href="<?php echo $this->webroot.'tags/view/'.$tag['Tag']['id'] ?>" >
-     <span class="draggableTag taggedTag" id="image_<?php echo $data['id'] ?>_tag_<?php echo $tag ['Tag']['id'] ?>">
-     <?php   
-     echo $tag ['Tag']['name']; 
-     ?>
-     </span>
-     </a>
-</li> 
-     <?php
+    	echo $this->element('Tag/tagPhoto', array('tag'=>$tag));
      }
      ?>
       </ul>

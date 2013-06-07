@@ -6,7 +6,7 @@ App::uses('AppController', 'Controller');
  * @property Image $Image
  */
 class ImagesController extends AppController {
-public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag');
+public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag');
 /**
  * index method
  *
@@ -45,7 +45,6 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag');
   	if ($this->request->is('post') || $this->request->is('put'))
   	{
   		$tag = $this->ImageTag->find('first', array('conditions'=>array('imageid'=>$id, 'tagid' => $this->request->data['tagId'])));
-  		debug($tag);
   		if(! $this->ImageTag->delete($tag['ImageTag']))
   		{
 //   			throw new InternalErrorException(__('tag not saved'));
@@ -77,6 +76,11 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag');
   			throw new InternalErrorException(__('tag not saved'));
   		}
   	}
+  	$this->Tag->contain();
+  	$tag = $this->Tag->findById($this->request->data['tagId']);
+  	$tag['imageid'] = $id;
+  	$this->set('tag',$tag);
+  	
   }
   
   public function rate($id = null) {

@@ -82,8 +82,24 @@ $(function(){ // wait for document to load
 
 	/******TAGS******/
 	//tag
-	 $( ".draggableTag" ).draggable({containment: '#content', helper: 'clone'  });
+	
+	
+	 $( ".availableTag" ).draggable({
+		 revertDuration: 600,
+		 revert:true,
+		 helper : 'clone',
+		 start: function (event, ui) {
+			 console.log($(this));
+	         $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
+	         $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
+	     },
+
+		   });
+
+		   
 	 $( ".droppableImageTag" ).droppable({
+		activeClass: 'drop-active',
+		hoverClass: 'drop-hover',
 		 accept: ".availableTag",
 	 drop: function( event, ui ) {
 		 element = $(this);
@@ -97,6 +113,8 @@ $(function(){ // wait for document to load
 	            complete: function(req) {
 	                if (req.status == 200) { //success
 	                	element.fadeTo(600, 1);
+	                	console.log(req.responseText);
+	                	$("#tagsPhoto_"+imageId).append(req.responseText);
 	                } else { //failure
 	                    alert(req.responseText);
 	                    //$("#rate_container_"+photoId).fadeTo(2200, 1);
@@ -108,29 +126,27 @@ $(function(){ // wait for document to load
 
 	 /// untag
 
-	 $( ".tagTree" ).droppable({
-		 accept: ".taggedTag",
-	 drop: function( event, ui ) {
-		 splittedId = ui.draggable.attr('id').split(/_/);
-		 
-		 tagId = splittedId[3];
-		 imageId = splittedId[1];
-		 $.ajax({
-	            url: '<?php echo $this->webroot; ?>images/untag/'+imageId,
-	            type: "POST",
-	            data: 'tagId=' + tagId,
-	            complete: function(req) {
-	                if (req.status == 200) { //success
-	                	//$("#rate_container_"+photoId).fadeTo(600, 1);
-	                } else { //failure
-	                    alert(req.responseText);
-	                    //$("#rate_container_"+photoId).fadeTo(2200, 1);
-	                }
-	            }
-	        });
-	 }
-	 });
 	});
+
+function removeTag(imageId, tagId)
+{
+	 element = $("#image_"+imageId+"_tag_"+tagId);
+	 element.fadeTo(600, 0.5);
+	 $.ajax({
+           url: '<?php echo $this->webroot; ?>images/untag/'+imageId,
+           type: "POST",
+           data: 'tagId=' + tagId,
+           complete: function(req) {
+               if (req.status == 200) { //success
+          		 element.remove();
+               } else { //failure
+                   alert(req.responseText);
+                   //$("#rate_container_"+photoId).fadeTo(2200, 1);
+               }
+           }
+       });
+}
+	
 //-->
 </script>
 </head>
