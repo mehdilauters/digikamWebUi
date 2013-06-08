@@ -36,7 +36,8 @@ class Tag extends AppModel {
     'ImageTagProperty' => array(
       'className' => 'ImageTagProperty',
       'foreignKey' => 'tagid',
-      'conditions' => 'Image.imageid = ImageTagProperty.imageid',
+//       'conditions' => 'Image.imageid = ImageTagProperty.imageid',
+    
       'fields' => '',
       'order' => ''
     ),

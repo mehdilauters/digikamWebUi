@@ -1,9 +1,12 @@
 <div class="albums view">
-<h2><?php echo h($album['Album']['relativePath']); ?></h2>
+<?php $path = explode('/',$album['Album']['relativePath']);
+$lastName = $path[ count($path) - 1 ];
+?>
+<h2><?php echo h($lastName); ?></h2>
 	<dl>
-		<dt><?php echo __('Album Root'); ?></dt>
+		<dt><?php echo __('path'); ?></dt>
 		<dd>
-			<?php echo $this->Html->link($album['AlbumRoot']['id'], array('controller' => 'album_roots', 'action' => 'view', $album['AlbumRoot']['id'])); ?>
+			<?php echo h($album['Album']['relativePath']); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Date'); ?></dt>
@@ -27,14 +30,6 @@
 			&nbsp;
 		</dd>
 	</dl>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List Albums'), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Album Roots'), array('controller' => 'album_roots', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Images'), array('controller' => 'images', 'action' => 'index')); ?> </li>
-	</ul>
 </div>
 <div class="related">
 	<h3><?php echo __('Related Images'); ?></h3>

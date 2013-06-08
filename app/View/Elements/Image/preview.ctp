@@ -59,8 +59,8 @@ if(isset($image['ImageInformation']))
       </ul>
     </div>
   <div class="imagePreviewInfo">
-  	<h3>
+  	<h4>
     <a href="<?php echo $this->webroot.'images/view/'.$data['id'] ?>" title="" ><?php echo $data['name']?></a>
-    </h3>
+    </h4>
   </div>
 </div>

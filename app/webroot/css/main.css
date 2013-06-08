@@ -1,3 +1,17 @@
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#container{
+	width:98%;
+	padding-right:0px;
+}
+
 .drop-active{
 	background-color: #1BA5E0;
 }
@@ -7,3 +21,42 @@
 }
 
 .tag a{color: white}
+
+#leftPanel{
+	height:100%;
+	overflow-y : auto;
+}
+
+#rightPanel{
+	height:100%;
+	float:right;
+	overflow-y : auto;
+	margin-left: 2px;
+	margin-right:0px;
+}
+
+#content{
+	height:100%;
+	overflow-y : auto;
+}
+
+
+#contentRow{
+	height:600px;
+}
+.imagePreviewContainer:hover{
+	border: 1px solid black;
+}
+
+#imagePreviewFrame{
+	width:300px;
+	height:300px;
+}
+
+.imageRateContainer{
+	opacity:0.5;
+}
+
+.imagePreviewContainer:hover > .imageRateContainer{
+	opacity:1;
+}

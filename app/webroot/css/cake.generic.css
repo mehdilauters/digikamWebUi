@@ -39,18 +39,7 @@
 	height:200px;
 }
 
-.imageRateContainer{
-	padding-top:5px;
-	padding-left:100px;
-	padding-bottom:5px;
-	/* visibility:hidden; */
-	opacity:0.5;
-}
 
-.imagePreviewContainer:hover > .imageRateContainer{
-	/* visibility:visible; */
-	opacity:1;
-}
 
 .imagePreviewInfo{
 	padding-top:5px;

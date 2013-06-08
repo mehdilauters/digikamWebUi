@@ -17,14 +17,13 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-$cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php echo $cakeDescription ?>:
+		DigikamWebUi
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
@@ -50,7 +49,34 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	?>
 	<script type="text/javascript">
 <!--
+
+function resize()
+{
+	winHeight = $(window).height();
+	headerHeight = $("#header").height();
+	footerHeight = $("#footer").height();
+
+	contentHeight = winHeight - (headerHeight + footerHeight);
+
+	$("#contentRow").height(contentHeight);
+/*
+
+	winWidth = $(window).width();
+	leftPanelWidth = $("#leftPanel").width();
+	rightPanelWidth = $("#right²Panel").width();
+
+	contentWidth = winWidth - (leftPanelWidth + rightPanelWidth );
+	$("#content").width(contentWidth); */
+	
+}
+
 $(function(){ // wait for document to load
+
+// layout definition
+ resize();
+
+ $(window).resize(resize);
+	
 	$('.imageRate').rating({
 		callback: function(value, link){
 			photoId = $(this).attr('rel');
@@ -153,10 +179,11 @@ function removeTag(imageId, tagId)
 <body>
 	<div id="container" class="container-fluid">
 		<div id="header" class="row-fluid">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
+			<h1>Digikam Web Ui</h1>
 		</div>
-		<div id="header" class="row-fluid">
+		<div id="contentRow" class="row-fluid">
 			<div id="leftPanel" class="span2">
+			<h3>Albums</h3>
 			<?php echo $this->element('Album/tree', array('albumTree'=> $albumTree, /*'selectedAlbum'=>$selectedAlbum*/)); ?>
 			</div>
 			<div id="content" class="span8">
@@ -164,11 +191,13 @@ function removeTag(imageId, tagId)
 	
 				<?php echo $this->fetch('content'); ?>
 			</div>
-			<div id="rightPanel" class="span2"><?php echo $this->element('Tag/tree',array('tagsTree'=>$tagsTree))?></div>
+			<div id="rightPanel" class="span2">
+		<h3>Tags</h3>
+			<?php echo $this->element('Tag/tree',array('tagsTree'=>$tagsTree))?></div>
 		</div>
 		<div id="footer" class="row-fluid">
 			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
+					$this->Html->image('cake.power.gif', array('alt' => 'Cakephp', 'border' => '0')),
 					'http://www.cakephp.org/',
 					array('target' => '_blank', 'escape' => false)
 				);
