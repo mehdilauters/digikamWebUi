@@ -20,8 +20,8 @@ if(isset($image['ImageInformation']))
 
 <div id="previewContainer_<?php echo $data['id']?>" class="imagePreviewContainer droppableImageTag thumbnail">
   <div class="imagePreviewFrame">
-  	<a href="#" >
-    <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview" src="<?php echo $this->webroot.'/images/download/'.$data['id'].'/preview' ?>" alt="<?php echo $data['name'] ?>" />
+  	<a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>" class="fancybox" rel="album" >
+    <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview" src="<?php echo $this->webroot.'images/download/'.$data['id'].'/preview' ?>" alt="<?php echo $data['name'] ?>" />
     </a>
   </div>
   <?php 

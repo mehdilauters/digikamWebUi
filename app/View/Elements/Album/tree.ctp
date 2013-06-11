@@ -24,6 +24,7 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds)
 			{
 				$html .= '<span onClick="$(\'#album_'.$albumId.'\').toggle();" >+</span>';
 			}
+			$html .= '<span class="availableAlbum" id="draggableAlbum_'.$albumId.'">drag</span>';
 			$html .= '<a href="'.$webroot.'albums/view/'.$albumId.'" >'.$nodeName.'</a>';
 			if($node != null)
 			{

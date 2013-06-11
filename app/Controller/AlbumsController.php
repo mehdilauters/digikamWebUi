@@ -159,9 +159,8 @@ class AlbumsController extends AppController {
   }
   
   
-//   public function beforeFilter()
-//   {
-//     $tree = $this->getTree();
-//     $this->set('albumTree',$tree);
-//   }
+	function beforeFilter() {
+		parent::beforeFilter();
+		$this->Auth->allow('getTree');	
+	}
 }

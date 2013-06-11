@@ -9,6 +9,7 @@ app/Model/Datasource/digikam4.db
 /build
 /dist
 /tags
+*.db
 
 # OS generated files #
 ######################

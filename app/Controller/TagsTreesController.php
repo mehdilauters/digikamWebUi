@@ -107,9 +107,8 @@ public $components = array('Tree');
   	return $tree;
   }
   
-//   public function beforeFilter()
-//   {
-  	
-//   	$this->set('tagsTree', $this->getTree);
-//   }
+	function beforeFilter() {
+		parent::beforeFilter();
+		$this->Auth->allow('getTree');	
+	}
 }

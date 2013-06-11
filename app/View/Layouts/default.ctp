@@ -32,13 +32,15 @@
 		echo $this->Html->css('jquery-ui/jquery-ui-1.10.3.custom.min');
 		echo $this->Html->css('main');
 		echo $this->Html->css('bootstrap.min');
+		echo $this->Html->css('fancy/jquery.fancybox');
 		
 		echo $this->Html->script(
 				array( 	'jquery-1.9.1.min',
 						'jquery.rating.pack',
 						'jquery.MetaData',
 						'jquery-ui-1.10.3.custom.min',
-						'bootstrap.min'
+						'bootstrap.min',
+						'jquery.fancybox.pack'
 				),
 				array('inline' => 'false')
 		);
@@ -47,6 +49,7 @@
 		echo $this->Html->css('rating/jquery.rating');
 		echo $this->fetch('script');
 	?>
+
 	<script type="text/javascript">
 <!--
 
@@ -74,6 +77,8 @@ $(function(){ // wait for document to load
 
 // layout definition
  resize();
+
+ 
 
  $(window).resize(resize);
 	
@@ -122,6 +127,50 @@ $(function(){ // wait for document to load
 
 		   });
 
+	 $( ".availableAlbum" ).draggable({
+		 revertDuration: 600,
+		 revert:true,
+		 helper : 'clone',
+		 start: function (event, ui) {
+			 console.log($(this));
+	         $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
+	         $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
+	     },
+
+		   });
+		
+
+
+	 $( ".droppableAvailableAlbum" ).droppable({
+			activeClass: 'drop-active',
+			hoverClass: 'drop-hover',
+			 accept: ".availableAlbum",
+		 drop: function( event, ui ) {
+			 element = $(this);
+			 element.fadeTo(600, 0.5);
+			 albumId = ui.draggable.attr('id').replace('draggableAlbum_','');
+			 userId = $(this).attr('id').replace('availableAlbum_','');
+			 $.ajax({
+		            url: '<?php echo $this->webroot; ?>users/addAlbum',
+		            type: "POST",
+		            data: 'userId='+userId+'&albumId=' + albumId,
+		            complete: function(req) {
+		                if (req.status == 200) { //success
+		                	element.fadeTo(600, 1);
+		                	console.log(req.responseText);
+		                	$("#tagsPhoto_"+imageId).append(req.responseText);
+		                } else { //failure
+		                    alert(req.responseText);
+		                    //$("#rate_container_"+photoId).fadeTo(2200, 1);
+		                }
+		            }
+		        });
+		 }
+		 });
+
+	 
+	 
+	 
 		   
 	 $( ".droppableImageTag" ).droppable({
 		activeClass: 'drop-active',
@@ -180,6 +229,12 @@ function removeTag(imageId, tagId)
 	<div id="container" class="container-fluid">
 		<div id="header" class="row-fluid">
 			<h1>Digikam Web Ui</h1>
+			<?php if($this->Session->check('Auth.User')){
+	?>
+	<span>logout <a href="<?php echo $this->webroot ?>users/logout"><?php echo AuthComponent::user('username') ?></a></span>
+	<?php 
+}
+?>
 		</div>
 		<div id="contentRow" class="row-fluid">
 			<div id="leftPanel" class="span2">
@@ -187,7 +242,10 @@ function removeTag(imageId, tagId)
 			<?php echo $this->element('Album/tree', array('albumTree'=> $albumTree, /*'selectedAlbum'=>$selectedAlbum*/)); ?>
 			</div>
 			<div id="content" class="span8">
-				<?php echo $this->Session->flash(); ?>
+				<?php
+				echo $this->Session->flash(); 
+				echo $this->Session->flash('auth');
+				?>
 	
 				<?php echo $this->fetch('content'); ?>
 			</div>
@@ -204,7 +262,11 @@ function removeTag(imageId, tagId)
 			?>
 		</div>
 	</div>
-	
 	<?php echo $this->element('sql_dump'); ?>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$(".fancybox").fancybox();
+	});
+</script>
 </body>
 </html>

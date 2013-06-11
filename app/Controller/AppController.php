@@ -32,22 +32,38 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+	var $components    = array('DebugKit.Toolbar','Session','Auth'=>array('Form' => array()),'RequestHandler');
 
 	public function beforeRender()
 	{
-// 		if($this->name != 'Albums')
-		{
-			$tree = $this->requestAction('/albums/getTree');
-			$this->set('albumTree',$tree);			
-		}
+// 		return true;
 
-// 		if($this->name != 'TagsTrees')
-		{
+			$tree = $this->requestAction('/albums/getTree');
+			$this->set('albumTree',$tree);		
+				
 			$tagsTree = $this->requestAction('/tagsTrees/getTree');
 			$this->set('tagsTree', $tagsTree);
-		}
 	
 				
 	}
 
+	function isAuthorized() {
+		if($this->Auth->user('id') == 1)
+		{
+			return true;
+		}
+	}
+	
+	function beforeFilter() {
+		parent::beforeFilter();
+		 
+		$this->Auth->authError = "Sorry, this page is not available for you!";
+		$this->Auth->loginError = "Your password is wrong!";
+		$this->Auth->authorize = 'Controller';
+// 		if($this->Auth->user['id'] == 1)
+// 		{
+// 			$this->Auth->allow();
+// 		}
+		
+	}
 }
