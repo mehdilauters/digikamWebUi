@@ -71,13 +71,13 @@ class Image extends AppModel {
       'fields' => '',
       'order' => ''
   ),*/
-  		'ImageInformation' => array(
-  				'className' => 'ImageInformation',
-  				'foreignKey' => 'imageid',
-  				'conditions' => '',
-  				'fields' => '',
-  				'order' => ''
-  		),
+      'ImageInformation' => array(
+          'className' => 'ImageInformation',
+          'foreignKey' => 'imageid',
+          'conditions' => '',
+          'fields' => '',
+          'order' => ''
+      ),
     'ImagePosition' => array(
       'className' => 'ImagePosition',
       'foreignKey' => 'imageid',
@@ -170,6 +170,46 @@ class Image extends AppModel {
       'counterQuery' => ''
     ),
   );
+  
+
+  public function beforeFind($queryData)
+  {
+    $res = parent::beforeFind($queryData);
+    /*
+    if(AuthComponent::user('id') == 1)
+    {
+      return $queryData;
+    }
+    */
+    App::import('Model', 'CakeSession');
+    $session = new CakeSession();
+    $userAvailableTags = $session->read('Rights.UserAvailablesTags');
+    $userForbiddenTags = $session->read('Rights.UserForbiddenTags');
+    
+    $userAvailableAlbums = $session->read('Rights.UserAvailablesAlbums');
+    $userForbiddenAlbums = $session->read('Rights.UserForbiddenAlbums');
+    
+    if(count($userForbiddenAlbums ) != 0)
+    {
+      $queryData['conditions']['Image.album'] = 'not in ('.implode(',', $userForbiddenAlbums).')';
+    }
+    
+    
+    /*    App::import('Model', 'ImageTag');
+    $imageTag = new ImageTag();
+    $subSqlQuery = $imageTag->find('sql', array('fields'=>'imageid','conditions'=>'tagid not in ('.implode(',', $userForbiddenTags).')'));
+    */
+    
+    $subSqlQuery = 'SELECT imageid from ImageTags where tagid not in ('.implode(',', $userForbiddenTags).')';
+    
+    if(count($userForbiddenTags) != 0)
+    {
+      $queryData['conditions']['Image.id'] = 'not in ('.$subSqlQuery.')';
+    }
+    debug($queryData);
+    return $queryData;
+  }
+  
   public function getPath(&$data)
   {
     if($data == NULL)

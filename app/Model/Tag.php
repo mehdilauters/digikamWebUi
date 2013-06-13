@@ -32,10 +32,11 @@ class Tag extends AppModel {
     ),
   );
   
-    public $belongsTo = array(
+    public $hasOne = array(
     'ImageTagProperty' => array(
       'className' => 'ImageTagProperty',
       'foreignKey' => 'tagid',
+      //'associationForeignKey'=>'tagid',
 //       'conditions' => 'Image.imageid = ImageTagProperty.imageid',
     
       'fields' => '',
@@ -44,13 +45,22 @@ class Tag extends AppModel {
     );
     
     public $hasMany = array(
-    		'TagProperty' => array(
-    				'className' => 'TagProperty',
-    				'foreignKey' => 'tagid',
-    				'conditions' => '',
-    				'fields' => '',
-    				'order' => ''
-    		),
-    		);
-    	
+        'TagProperty' => array(
+            'className' => 'TagProperty',
+            'foreignKey' => 'tagid',
+          //        'associationForeignKey'=>'tagid',
+            'conditions' => '',
+            'fields' => '',
+            'order' => ''
+        ),
+        'ImageTag' => array(
+            'className' => 'ImageTag',
+            'foreignKey' => 'tagid',
+          //        'associationForeignKey'=>'tagid',
+            'conditions' => '',
+            'fields' => '',
+            'order' => ''
+        ),
+        );
+      
 }
