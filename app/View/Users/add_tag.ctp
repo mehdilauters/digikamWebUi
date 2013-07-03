@@ -1,0 +1,1 @@
+<?php echo $this->element('Tag/tag', array('tag'=>$tag)); ?>

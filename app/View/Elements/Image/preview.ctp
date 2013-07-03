@@ -10,6 +10,20 @@ else
   $data = $image['Image'];
   
 }
+  $imageTag = false;
+ if( isset($image['ImageTag']))
+ {
+    $imageTag = $image['ImageTag'];
+ }
+ else
+ {
+  if(isset($image['Image']['ImageTag']))
+  {
+        $imageTag = $image['Image']['ImageTag'];
+  }
+
+ }
+ 
 if(isset($image['ImageInformation']))
 {
   $rating = $image['ImageInformation']['rating'];
@@ -20,7 +34,7 @@ if(isset($image['ImageInformation']))
 
 <div id="previewContainer_<?php echo $data['id']?>" class="imagePreviewContainer droppableImageTag thumbnail">
   <div class="imagePreviewFrame">
-  	<a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>" class="fancybox" rel="album" >
+    <a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>" class="fancybox" rel="album" >
     <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview" src="<?php echo $this->webroot.'images/download/'.$data['id'].'/preview' ?>" alt="<?php echo $data['name'] ?>" />
     </a>
   </div>
@@ -51,15 +65,18 @@ if(isset($image['ImageInformation']))
       <ul id="tagsPhoto_<?php echo $data['id'] ?>">
      <?php
 
-     foreach( $image['ImageTag'] as $tag)
+     if( $imageTag != false)
      {
-    	echo $this->element('Tag/tagPhoto', array('tag'=>$tag));
+        foreach($imageTag as $tag)
+        {
+         echo $this->element('Tag/tagPhoto', array('tag'=>$tag));
+        }
      }
      ?>
       </ul>
     </div>
   <div class="imagePreviewInfo">
-  	<h4>
+    <h4>
     <a href="<?php echo $this->webroot.'images/view/'.$data['id'] ?>" title="" ><?php echo $data['name']?></a>
     </h4>
   </div>

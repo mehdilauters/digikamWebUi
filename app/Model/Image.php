@@ -200,10 +200,11 @@ class Image extends AppModel {
     $subSqlQuery = $imageTag->find('sql', array('fields'=>'imageid','conditions'=>'tagid not in ('.implode(',', $userForbiddenTags).')'));
     */
     
-    $subSqlQuery = 'SELECT imageid from ImageTags where tagid not in ('.implode(',', $userForbiddenTags).')';
-    
-    if(count($userForbiddenTags) != 0)
+ if(count($userForbiddenTags) != 0)
     {
+      $subSqlQuery = 'SELECT imageid from ImageTags where tagid not in ('.implode(',', $userForbiddenTags).')';
+    
+   
       $queryData['conditions']['Image.id'] = 'not in ('.$subSqlQuery.')';
     }
     debug($queryData);

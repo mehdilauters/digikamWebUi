@@ -28,42 +28,43 @@ App::uses('Controller', 'Controller');
  * Add your application-wide methods in the class below, your controllers
  * will inherit them.
  *
- * @package		app.Controller
- * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
+ * @package    app.Controller
+ * @link    http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	var $components    = array('DebugKit.Toolbar','Session','Auth'=>array('Form' => array()),'RequestHandler');
+  var $components    = array('DebugKit.Toolbar','Session','Auth'=>array('Form' => array()),'RequestHandler');
 
-	public function beforeRender()
-	{
-// 		return true;
+  public function beforeRender()
+  {
+//     return true;
 
-			$tree = $this->requestAction('/albums/getTree');
-			$this->set('albumTree',$tree);		
-				
-			$tagsTree = $this->requestAction('/tagsTrees/getTree');
-			$this->set('tagsTree', $tagsTree);
-	
-				
-	}
+      $tree = $this->requestAction('/albums/getTree');
+      $this->set('albumTree',$tree);    
+        
+      $tagsTree = $this->requestAction('/tagsTrees/getTree');
+      $this->set('tagsTree', $tagsTree);
+  
+        
+  }
 
-	function isAuthorized() {
-		if($this->Auth->user('id') == 1)
-		{
-			return true;
-		}
-	}
-	
-	function beforeFilter() {
-		parent::beforeFilter();
-		 
-		$this->Auth->authError = "Sorry, this page is not available for you!";
-		$this->Auth->loginError = "Your password is wrong!";
-		$this->Auth->authorize = 'Controller';
-// 		if($this->Auth->user['id'] == 1)
-// 		{
-// 			$this->Auth->allow();
-// 		}
-		
-	}
+  function isAuthorized() {
+    if($this->Auth->user('id') == 1)
+    {
+      return true;
+    }
+    return false;
+  }
+  
+  function beforeFilter() {
+    parent::beforeFilter();
+     
+    $this->Auth->authError = "Sorry, this page is not available for you!";
+    $this->Auth->loginError = "Your password is wrong!";
+    $this->Auth->authorize = 'Controller';
+     if($this->Auth->user['id'] == 1)
+     {
+       $this->Auth->allow('*');
+     }
+    
+  }
 }

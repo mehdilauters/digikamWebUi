@@ -222,7 +222,10 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
       if($this->Auth->login()){
         
         $this->UsersAvailableTag->recursive = -1;
-        $userAvailablesTags = $this->UsersAvailableTag->find('list', array('conditions'=>array('user_id'=>$this->Auth->user('id'))));
+        
+        $userAvailablesTags = $this->UsersAvailableTag->find('list', array('fields'=>array('tag_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
+        $userAvailablesTags = array_values($userAvailablesTags);
+        
         $this->Session->write('Rights.UserAvailablesTags', $userAvailablesTags );
        
         $this->UsersForbiddenTag->recursive = -1;
@@ -247,7 +250,7 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
         
         */
         $this->Session->setFlash('Logged as '.$this->Auth->user('username'), 'flash/ok');
-        //return $this->redirect($this->Auth->redirect());
+        return $this->redirect($this->Auth->redirect());
       }
       else
       {
@@ -264,6 +267,10 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
   
   function beforeFilter() {
     parent::beforeFilter();
+    if($this->Auth->loggedIn())
+    {
+          $this->Auth->allow('logout');  
+    }
     $this->Auth->allow('login','add');  
   }
 }

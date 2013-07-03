@@ -1,4 +1,4 @@
-<div class="userManagementContainer" rel="<?php echo AuthComponent::user('id'); ?>" >
+<div class="userManagementContainer" rel="<?php echo $user['User']['id']; ?>" >
 <h2>Manage users</h2>
 
 <div class="droppableAvailableAlbum" id="availableAlbum_<?php echo AuthComponent::user('id'); ?>">

@@ -227,7 +227,7 @@ $(function(){ // wait for document to load
 
      $(".userAvailableTag").each(function() {
           tagId = $(this).attr('id').replace('tag_', '');
-          userId = <?php echo AuthComponent::user('id') ?>;
+          userId = <?php echo $user['User']['id'] ?>;
           $(this).append('<div oncliCk="removeUserAvailableTag('+userId+', '+tagId+')" >remove</div>')});
 
   });

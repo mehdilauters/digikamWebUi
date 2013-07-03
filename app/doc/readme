@@ -1,0 +1,7 @@
+entries controllers:
+    tags      => check tagId and Image.albumId
+    images    => check albumId and ImageTag.tagId
+    albums    => check Image.ImageTag.tagId
+    
+    
+root user: user with id = 1

@@ -28,11 +28,15 @@ class TagsController extends AppController {
     if (!$this->Tag->exists($id)) {
       throw new NotFoundException(__('Invalid tag'));
     }
+     if( ! ( in_array($id, $this->Session->read('Rights.UserAvailablesTags')) || $this->Auth->user('id') == 1 ))
+     {
+       throw new ForbiddenException('Frobidden');
+     } 
+    
     $options = array('conditions' => array('Tag.' . $this->Tag->primaryKey => $id),
-                    'contain'=>array('ImageTag.Image', 'ImageTagProperty'),
+                    'contain'=>array('ImageTag.Image', 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty'),
                     );
     $tag = $this->Tag->find('first', $options);
-    debug($tag);
     $this->set('tag', $tag);
   }
 
@@ -96,5 +100,14 @@ class TagsController extends AppController {
     }
     $this->Session->setFlash(__('Tag was not deleted'));
     $this->redirect(array('action' => 'index'));
+  }
+
+  
+    function beforeFilter() {
+    parent::beforeFilter();
+    if($this->Auth->loggedIn())
+    {
+      $this->Auth->allow('view');  
+    }
   }
 }
