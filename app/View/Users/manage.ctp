@@ -1,7 +1,7 @@
 <div class="userManagementContainer" rel="<?php echo $user['User']['id']; ?>" >
 <h2>Manage users</h2>
 
-<div class="droppableAvailableAlbum" id="availableAlbum_<?php echo AuthComponent::user('id'); ?>">
+<div class="droppableAvailableAlbum" id="availableAlbum_<?php echo $user['User']['id']; ?>">
   <span>UsersAvailableAlbum</span>
   <div>
   <ul>
@@ -16,13 +16,13 @@ foreach ($user['UsersAvailableAlbum'] as $availableAlbum) {
 </div>
 
 
-<div class="droppableForbiddenAlbum" id="forbiddenAlbum_<?php echo AuthComponent::user('id'); ?>">
+<div class="droppableForbiddenAlbum" id="forbiddenAlbum_<?php echo $user['User']['id']; ?>">
   <span>UsersForbiddenAlbum</span>
   <div>
   <ul>
    <?php
 foreach ($user['UsersForbiddenAlbum'] as $userForbiddenAlbum) {
-  echo ('<li>'.$usersForbiddenAlbum['Album']['relativePath'].'</li>');
+  echo ('<li>'.$userForbiddenAlbum['Album']['relativePath'].'</li>');
 }
   
   ?> 
@@ -30,7 +30,7 @@ foreach ($user['UsersForbiddenAlbum'] as $userForbiddenAlbum) {
 </div>
 
 
-<div class="droppableAvailableTag" id="availableTag_<?php echo AuthComponent::user('id'); ?>">
+<div class="droppableAvailableTag" id="availableTag_<?php echo $user['User']['id']; ?>">
   <span>UsersAvailableTag</span>
   <div>
   <ul>
@@ -45,7 +45,7 @@ foreach ($user['UsersAvailableTag'] as $availableTag) {
 </div>
 
 
-<div class="droppableForbiddenTag" id="forbiddenTag_<?php echo AuthComponent::user('id'); ?>">
+<div class="droppableForbiddenTag" id="forbiddenTag_<?php echo $user['User']['id']; ?>">
   <span>UsersAvailableTag</span>
   <div>
   <ul>

@@ -150,15 +150,42 @@ $(function(){ // wait for document to load
        element.fadeTo(600, 0.5);
        albumId = ui.draggable.attr('id').replace('draggableAlbum_','');
        userId = $(".userManagementContainer").attr('rel');
+       action = element.attr('rel');
        $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addAlbum',
+                url: '<?php echo $this->webroot; ?>users/addAvailableAlbum' ,
                 type: "POST",
                 data: 'userId='+userId+'&albumId=' + albumId,
                 complete: function(req) {
                     if (req.status == 200) { //success
                       element.fadeTo(600, 1);
-                      console.log(req.responseText);
-                      $("#tagsPhoto_"+imageId).append(req.responseText);
+                      $("#availableAlbum_"+userId).append(req.responseText);
+                    } else { //failure
+                        alert(req.responseText);
+                        //$("#rate_container_"+photoId).fadeTo(2200, 1);
+                    }
+                }
+            });
+     }
+     });
+     
+      $( ".droppableForbiddenAlbum" ).droppable({
+      activeClass: 'drop-active',
+      hoverClass: 'drop-hover',
+       accept: ".availableAlbum",
+     drop: function( event, ui ) {
+       element = $(this);
+       element.fadeTo(600, 0.5);
+       albumId = ui.draggable.attr('id').replace('draggableAlbum_','');
+       userId = $(".userManagementContainer").attr('rel');
+       action = element.attr('rel');
+       $.ajax({
+                url: '<?php echo $this->webroot; ?>users/addForbiddenAlbum' ,
+                type: "POST",
+                data: 'userId='+userId+'&albumId=' + albumId,
+                complete: function(req) {
+                    if (req.status == 200) { //success
+                      element.fadeTo(600, 1);
+                      $("#forbiddenAlbum_"+userId).append(req.responseText);
                     } else { //failure
                         alert(req.responseText);
                         //$("#rate_container_"+photoId).fadeTo(2200, 1);
@@ -227,7 +254,7 @@ $(function(){ // wait for document to load
 
      $(".userAvailableTag").each(function() {
           tagId = $(this).attr('id').replace('tag_', '');
-          userId = <?php echo $user['User']['id'] ?>;
+          userId = <?php echo AuthComponent::user('id') ?>;
           $(this).append('<div oncliCk="removeUserAvailableTag('+userId+', '+tagId+')" >remove</div>')});
 
   });

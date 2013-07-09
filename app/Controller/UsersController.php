@@ -105,7 +105,7 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
     $this->set('user',$user);
   }
   
-  function addAlbum()
+  function addAvailableAlbum()
   {
     $this->layout = 'ajax';
     
@@ -134,8 +134,39 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
     }
   }
   
+  function addForbiddenAlbum()
+  {
+    $this->layout = 'ajax';
+    
+    if ($this->request->is('post') || $this->request->is('put'))
+    {
+      $userId = $this->request->data['userId'];
+      $albumId = $this->request->data['albumId'];
+      
+      if (!$this->Album->exists($albumId)) {
+        throw new NotFoundException(__('Invalid Album'));
+      }
+      
+      if (!$this->User->exists($userId)) {
+        throw new NotFoundException(__('Invalid User'));
+      }
+      $usersForbiddenAlbum = array('UsersForbiddenAlbum'=>array(
+            'user_id' => $userId,
+            'album_id' => $albumId,
+          ));
+      if( ! $this->UsersForbiddenAlbum->save($usersForbiddenAlbum ) )
+      {
+        throw new InternalErrorException(__('UsersForbiddenAlbum not saved'));
+      }
+      $album = $this->Album->findById($albumId);
+      $this->set('album', $album);
+    }
+  }
   
-  function removeAlbum()
+  
+  
+  
+  function removeAvailableAlbum()
   {
     $this->layout = 'ajax';
   
@@ -157,6 +188,8 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
       {
         throw new InternalErrorException(__('UserAvailableAlbum not deleteted'));
       }
+      $album = $this->Album->findById($albumId);
+      $this->set('album', $album);
     }
   }
   
