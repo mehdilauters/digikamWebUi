@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 </script>
 <?php
-function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds)
+function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_currentPath = '')
 {
   
   
@@ -18,14 +18,38 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds)
 //   }
   
   foreach ($rootNode as $nodeName => $node) {
-    $albumId = array_shift($rootIds);
+  	$currentPath = $_currentPath.'/'.$nodeName;
+
+//    $albumId = array_shift($rootIds);
+// TODO
+  	$albumId = NULL;
+  	$idIndice = str_replace('/root','',$currentPath);
+  	if( $idIndice == '' )
+  	{
+  		$idIndice = '/';
+  	}
+  	
+	if( isset($rootIds[ $idIndice ]))
+	{
+		$albumId = $rootIds[$idIndice];
+	}
+// 	debug($currentPath);
+// 	debug($albumId);
+// 	debug($rootIds);
       $html .= '<li>';
       if($node != null)
       {
         $html .= '<span onClick="$(\'#album_'.$albumId.'\').toggle();" >+</span>';
       }
       $html .= '<span class="availableAlbum" id="draggableAlbum_'.$albumId.'"> | </span>';
-      $html .= '<a href="'.$webroot.'albums/view/'.$albumId.'" >'.$nodeName.'</a>';
+      if($albumId != NULL)
+      {
+      	$html .= '<a href="'.$webroot.'albums/view/'.$albumId.'" >'.$nodeName.'</a>';
+      }
+      else
+      {
+      	$html .= '<span >'.$nodeName.'</span>';
+      }
       if($node != null)
       {
         $class = '';
@@ -49,7 +73,7 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds)
         $html .= '<div class="'.$class.' albumContent" id="album_'.$albumId.'" >';
 //         debug($selectedAlbum);
 //         debug($nodeName);
-        $html .= getHtmlSubMenu($webroot, null/*array_values($selectedAlbum)*/, $node, $rootIds);
+        $html .= getHtmlSubMenu($webroot, null/*array_values($selectedAlbum)*/, $node, $rootIds, $currentPath);
         $html .= '<div/>';
       }
       

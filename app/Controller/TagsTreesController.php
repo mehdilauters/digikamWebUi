@@ -97,9 +97,16 @@ public $components = array('Tree');
   
   public function getTree()
   {
+  	$conditions = array();
+  	if( $this->Auth->user('id') != 1 ) 
+  	{
+  		$conditions = array('TagsTree.id in ('.implode(', ', $this->Session->read('Rights.UserAvailablesTags')).')');
+  	}
+  	
   	$this->recursive = -1;
   	$flatTree = $this->TagsTree->find('all', 
   			array('order'=>'TagsTree.pid asc',
+  					'conditions'=>$conditions,
   			'contain'   => array('Tag.TagProperty')
   			));
   	$this->Tree->set($flatTree);

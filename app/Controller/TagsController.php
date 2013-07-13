@@ -34,9 +34,19 @@ class TagsController extends AppController {
      } 
     
     $options = array('conditions' => array('Tag.' . $this->Tag->primaryKey => $id),
-                    'contain'=>array('ImageTag.Image', 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty'),
+                    'contain'=>array('ImageTag.Image', 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty', 'ImageTag.Image.Album'),
                     );
     $tag = $this->Tag->find('first', $options);
+    
+    foreach ($tag['ImageTag'] as $id => $imageTag) {
+    	{
+    		if( in_array($imageTag['Image']['album'], $this->Session->read('Rights.UserForbiddenAlbums') ))
+    		{
+    			unset($tag['ImageTag'][$id]);
+    		}
+    	}
+    }
+    
     $this->set('tag', $tag);
   }
 

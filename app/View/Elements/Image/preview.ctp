@@ -1,6 +1,6 @@
 <?php
-//debug($image);
-$rating = false;
+// debug($image);
+
 if( ! isset($image['Image']) )
 {
   $data = $image;
@@ -11,24 +11,52 @@ else
   
 }
   $imageTag = false;
- if( isset($image['ImageTag']))
- {
-    $imageTag = $image['ImageTag'];
- }
- else
- {
-  if(isset($image['Image']['ImageTag']))
-  {
-        $imageTag = $image['Image']['ImageTag'];
-  }
+  if( isset($data['ImageTag']))
+   {
+      $imageTag = $data['ImageTag'];
+   }
+   
+//  if( isset($image['ImageTag']))
+//  {
+//     $imageTag = $image['ImageTag'];
+//  }
+//  else
+//  {
+//   if(isset($image['Image']['ImageTag']))
+//   {
+//         $imageTag = $image['Image']['ImageTag'];
+//   }
 
- }
- 
-if(isset($image['ImageInformation']))
-{
-  $rating = $image['ImageInformation']['rating'];
+//  }
+
+   $rating = false;
+   if(isset($data['ImageInformation']))
+   {
+   	$rating = $data['ImageInformation']['rating'];
+   
+   }
+   
+   $album = false;
+   
+   if(isset($data['Album']))
+   {
+   	$album = $data['Album'];
+   }
+   	else
+   	{
+   		if(isset($image['Album']))
+   		{
+   			$album = $image['Album'];
+   		}
+   	}
+   
+   
+   
+// if(isset($image['ImageInformation']))
+// {
+//   $rating = $image['ImageInformation']['rating'];
   
-}
+// }
 
   ?>
 
@@ -79,5 +107,6 @@ if(isset($image['ImageInformation']))
     <h4>
     <a href="<?php echo $this->webroot.'images/view/'.$data['id'] ?>" title="" ><?php echo $data['name']?></a>
     </h4>
+    <a href="<?php echo $this->webroot.'albums/view/'.$data['album'] ?>" title="" ><?php echo $album['relativePath']?></a>
   </div>
 </div>

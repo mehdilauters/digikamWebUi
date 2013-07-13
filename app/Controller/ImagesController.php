@@ -25,6 +25,7 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
  * @param string $id
  * @return void
  */
+  // TODO
   public function view($id = null) {
     if (!$this->Image->exists($id)) {
       throw new NotFoundException(__('Invalid image'));
@@ -142,9 +143,64 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     $this->set(compact('albums'));
   }
 
+  
+  public function areTagsAvailable($image)
+  {
+  	foreach ($image['ImageTag'] as $imageTag)
+  	{
+  		if( in_array($imageTag['tagid'], $this->Session->read('Rights.UserAvailablesTags') ))
+  		{
+  			return true;
+  		}
+  	}
+  	 
+  	return false;
+  	 
+  }
+  
+  public function isAlbumAvailable($image)
+  {
+  	return in_array($image['Image']['album'], $this->Session->read('Rights.UserAvailablesAlbums'));
+  }
+  
+  public function areTagsForbidden($image)
+  {
+  	foreach ($image['ImageTag'] as $imageTag)
+  	{
+  		if( in_array($imageTag['tagid'], $this->Session->read('Rights.UserForbiddenTags') ))
+  		{
+  			return true;
+  		}
+  	}
+  	
+  	return false;
+  }
+  
+  public function isAlbumForbidden($image)
+  {
+  	return in_array($image['Image']['album'], $this->Session->read('Rights.UserForbiddenAlbums'));
+  }
+  
+  public function isAvailable($image)
+  {
+  	return (!$this->areTagsForbidden($image) && !$this->isAlbumForbidden($image))
+  				 && 
+  			($this->isAlbumAvailable($image) || $this->areTagsAvailable($image)); 
+  	
+  }
+  
   public function download($id, $preview = false)
   {
-    $photo = $this->Image->findById($id);
+    $photo = $this->Image->findById($id, array(
+//     		'contains' => array('ImageTag.Tag')
+    		));
+//     debug($photo);
+    if(! $this->isAvailable($photo))
+    {
+    	throw new ForbiddenException('Frobidden');
+    }
+    
+    
     $this->Image->getPath($photo);
     
     $this->viewClass = 'Media';

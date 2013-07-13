@@ -105,68 +105,7 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
     $this->set('user',$user);
   }
   
-  function addAvailableAlbum()
-  {
-    $this->layout = 'ajax';
-    
-    if ($this->request->is('post') || $this->request->is('put'))
-    {
-      $userId = $this->request->data['userId'];
-      $albumId = $this->request->data['albumId'];
-      
-      if (!$this->Album->exists($albumId)) {
-        throw new NotFoundException(__('Invalid Album'));
-      }
-      
-      if (!$this->User->exists($userId)) {
-        throw new NotFoundException(__('Invalid User'));
-      }
-      $usersAvailableAlbum = array('UsersAvailableAlbum'=>array(
-            'user_id' => $userId,
-            'album_id' => $albumId,
-          ));
-      if( ! $this->UsersAvailableAlbum->save($usersAvailableAlbum) )
-      {
-        throw new InternalErrorException(__('UserAvailableAlbum not saved'));
-      }
-      $album = $this->Album->findById($albumId);
-      $this->set('album', $album);
-    }
-  }
-  
-  function addForbiddenAlbum()
-  {
-    $this->layout = 'ajax';
-    
-    if ($this->request->is('post') || $this->request->is('put'))
-    {
-      $userId = $this->request->data['userId'];
-      $albumId = $this->request->data['albumId'];
-      
-      if (!$this->Album->exists($albumId)) {
-        throw new NotFoundException(__('Invalid Album'));
-      }
-      
-      if (!$this->User->exists($userId)) {
-        throw new NotFoundException(__('Invalid User'));
-      }
-      $usersForbiddenAlbum = array('UsersForbiddenAlbum'=>array(
-            'user_id' => $userId,
-            'album_id' => $albumId,
-          ));
-      if( ! $this->UsersForbiddenAlbum->save($usersForbiddenAlbum ) )
-      {
-        throw new InternalErrorException(__('UsersForbiddenAlbum not saved'));
-      }
-      $album = $this->Album->findById($albumId);
-      $this->set('album', $album);
-    }
-  }
-  
-  
-  
-  
-  function removeAvailableAlbum()
+function addAlbum($available = true)
   {
     $this->layout = 'ajax';
   
@@ -182,18 +121,35 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
       if (!$this->User->exists($userId)) {
         throw new NotFoundException(__('Invalid User'));
       }
-      $usersAvailableAlbum = $this->UsersAvailableAlbum->find('first', array('conditions'=>array('user_id'=>$userId, 'album_id'=>$albumId))); 
       
-      if( ! $this->UsersAvailableAlbum->delete($usersAvailableAlbum['UsersAvailableAlbum']['id']) )
+      if( $available === true )
       {
-        throw new InternalErrorException(__('UserAvailableAlbum not deleteted'));
+        $modelName = 'UsersAvailableAlbum';
+      }
+      else
+      {
+        $modelName = 'UsersForbiddenAlbum';        
+      }
+      
+      $$modelName = array($modelName=>array(
+          'user_id' => $userId,
+          'album_id' => $albumId,
+      ));
+      if( ! $this->$modelName->save($$modelName) )
+      {
+        throw new InternalErrorException(__($modelName.' not saved'));
       }
       $album = $this->Album->findById($albumId);
       $this->set('album', $album);
     }
   }
   
-  function addTag()
+  
+  
+  
+  
+  
+  function addTag($available = true)
   {
     $this->layout = 'ajax';
   
@@ -209,13 +165,23 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
       if (!$this->User->exists($userId)) {
         throw new NotFoundException(__('Invalid User'));
       }
-      $usersAvailableTag = array('UsersAvailableTag'=>array(
+      
+      if( $available === true )
+      {
+        $modelName = 'UsersAvailableTag';
+      }
+      else
+      {
+        $modelName = 'UsersForbiddenTag';        
+      }
+      
+      $$modelName = array($modelName=>array(
           'user_id' => $userId,
           'tag_id' => $tagId,
       ));
-      if( ! $this->UsersAvailableTag->save($usersAvailableTag) )
+      if( ! $this->$modelName->save($$modelName) )
       {
-        throw new InternalErrorException(__('UserAvailableTag not saved'));
+        throw new InternalErrorException(__($modelName.' not saved'));
       }
       $tag = $this->Tag->findById($tagId);
       $this->set('tag', $tag);
@@ -223,27 +189,37 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
   }
   
   
-  function removeTag()
+  function removeElement($element, $available = true)
   {
     $this->layout = 'ajax';
   
     if ($this->request->is('post') || $this->request->is('put'))
     {
       $userId = $this->request->data['userId'];
-      $tagId = $this->request->data['tagId'];
-  
-      if (!$this->Tag->exists($tagId)) {
-        throw new NotFoundException(__('Invalid Tag'));
+      $id = $this->request->data['id'];
+      
+		$Element = ucwords($element);
+      if (!$this->$Element->exists($id)) {
+        throw new NotFoundException(__('Invalid '.$Element));
       }
   
       if (!$this->User->exists($userId)) {
         throw new NotFoundException(__('Invalid User'));
       }
-      $usersAvailableTag = $this->UsersAvailableTag->find('first', array('conditions'=>array('user_id'=>$userId, 'tag_id'=>$tagId)));
 
-      if( ! $this->UsersAvailableTag->delete($usersAvailableTag['UsersAvailableTag']['id']) )
+      if( $available === true )
       {
-        throw new InternalErrorException(__('UserAvailableTag not deleteted'));
+      	$modelName = 'UsersAvailable'.$Element;
+      }
+      else
+      {
+      	$modelName = 'UsersForbidden'.$Element;
+      }
+      $res = $this->$modelName->find('first', array('conditions'=>array('user_id'=>$userId, $element.'_id'=>$id)));
+
+      if( ! $this->$modelName->delete($res[$modelName]['id']) )
+      {
+        throw new InternalErrorException(__($modelName.' not deleteted'));
       }
     }
   }
@@ -262,17 +238,17 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
         $this->Session->write('Rights.UserAvailablesTags', $userAvailablesTags );
        
         $this->UsersForbiddenTag->recursive = -1;
-        $userForbiddenTags = $this->UsersForbiddenTag->find('list', array('conditions'=>array('user_id'=>$this->Auth->user('id'))));
-        $this->Session->write('Rights.ForbiddenTags', $userForbiddenTags);
+        $userForbiddenTags = $this->UsersForbiddenTag->find('list', array('fields'=>array('tag_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
+        $this->Session->write('Rights.UserForbiddenTags', $userForbiddenTags);
        
        
         $this->UsersAvailableAlbum->recursive = -1;
-        $userAvailablesAlbum = $this->UsersAvailableAlbum->find('list', array('conditions'=>array('user_id'=>$this->Auth->user('id'))));
+        $userAvailablesAlbum = $this->UsersAvailableAlbum->find('list', array( 'fields'=>array('album_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
         $this->Session->write('Rights.UserAvailablesAlbums', $userAvailablesAlbum );
         
         
         $this->UsersForbiddenAlbum->recursive = -1;
-        $userForbiddenAlbum = $this->UsersForbiddenAlbum->find('list', array('conditions'=>array('user_id'=>$this->Auth->user('id'))));
+        $userForbiddenAlbum = $this->UsersForbiddenAlbum->find('list', array('fields'=>array('album_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
         $this->Session->write('Rights.UserForbiddenAlbums', $userForbiddenAlbum );
         /*
         $userAvailableTags = $session->read('Rights.UserAvailablesTags');
@@ -282,8 +258,19 @@ public $uses = array('User', 'UsersAvailableAlbum', 'UsersAvailableTag','UsersFo
         $userForbiddenAlbums = $session->read('Rights.UserForbiddenAlbums');
         
         */
+        
+        
+        
+      $tree = $this->requestAction('/albums/getTree');
+      $this->Session->write('User.cache.albumsTree', $tree );
+        
+      $tagsTree = $this->requestAction('/tagsTrees/getTree');
+      $this->Session->write('User.cache.tagsTree', $tagsTree );
+
+        
+        
         $this->Session->setFlash('Logged as '.$this->Auth->user('username'), 'flash/ok');
-        return $this->redirect($this->Auth->redirect());
+         return $this->redirect($this->Auth->redirect());
       }
       else
       {

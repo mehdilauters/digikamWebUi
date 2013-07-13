@@ -152,7 +152,7 @@ $(function(){ // wait for document to load
        userId = $(".userManagementContainer").attr('rel');
        action = element.attr('rel');
        $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addAvailableAlbum' ,
+                url: '<?php echo $this->webroot; ?>users/addAlbum' ,
                 type: "POST",
                 data: 'userId='+userId+'&albumId=' + albumId,
                 complete: function(req) {
@@ -179,7 +179,7 @@ $(function(){ // wait for document to load
        userId = $(".userManagementContainer").attr('rel');
        action = element.attr('rel');
        $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addForbiddenAlbum' ,
+                url: '<?php echo $this->webroot; ?>users/addAlbum/false' ,
                 type: "POST",
                 data: 'userId='+userId+'&albumId=' + albumId,
                 complete: function(req) {
@@ -224,6 +224,34 @@ $(function(){ // wait for document to load
      });
    
    
+   
+       $( ".droppableForbiddenTag" ).droppable({
+      activeClass: 'drop-active',
+      hoverClass: 'drop-hover',
+       accept: ".availableTag",
+     drop: function( event, ui ) {
+       element = $(this);
+       element.fadeTo(600, 0.5);
+       tagId = ui.draggable.attr('id').replace('draggableTag_','');
+       userId = $(".userManagementContainer").attr('rel');
+       $.ajax({
+                url: '<?php echo $this->webroot; ?>users/addTag/false',
+                type: "POST",
+                data: 'userId='+userId+'&tagId=' + tagId,
+                complete: function(req) {
+                    if (req.status == 200) { //success
+                      element.fadeTo(600, 1);
+                      console.log(req.responseText);
+                      $("#forbiddenTag_"+userId).append(req.responseText);
+                    } else { //failure
+                        alert(req.responseText);
+                        //$("#rate_container_"+photoId).fadeTo(2200, 1);
+                    }
+                }
+            });
+     }
+     });
+   
        
    $( ".droppableImageTag" ).droppable({
     activeClass: 'drop-active',
@@ -252,23 +280,46 @@ $(function(){ // wait for document to load
    }
    });
 
+   $(".userAvailableAlbum").each(function() {
+	   albumId = $(this).attr('id').replace('album_', '');
+       userId = $(".userManagementContainer").attr('rel');
+       $(this).append('<div oncliCk="removeUserElement('+userId+', \'album\', '+albumId+', true)" >remove</div>')});
+
+   $(".userForbiddenAlbum").each(function() {
+	   albumId = $(this).attr('id').replace('album_', '');
+       userId = $(".userManagementContainer").attr('rel');
+       $(this).append('<div oncliCk="removeUserElement('+userId+', \'album\', '+albumId+', false)" >remove</div>')});
+   
      $(".userAvailableTag").each(function() {
           tagId = $(this).attr('id').replace('tag_', '');
-          userId = <?php echo AuthComponent::user('id') ?>;
-          $(this).append('<div oncliCk="removeUserAvailableTag('+userId+', '+tagId+')" >remove</div>')});
+          userId = $(".userManagementContainer").attr('rel');
+          $(this).append('<div oncliCk="removeUserElement('+userId+', \'tag\', '+tagId+', true)" >remove</div>')});
 
+     $(".userForbiddenTag").each(function() {
+         tagId = $(this).attr('id').replace('tag_', '');
+         userId = $(".userManagementContainer").attr('rel');
+         $(this).append('<div oncliCk="removeUserElement('+userId+', \'tag\', '+tagId+', false)" >remove</div>')});
   });
 
 
   
-  function removeUserAvailableTag(userId, tagId)
+  function removeUserElement(userId, elementName, elementId, available)
 {
-   element = $("#tag_"+tagId);
+   element = $("#"+elementName+"_"+elementId);
    element.fadeTo(600, 0.5);
+	if(available)
+	{
+		elementType = ''; 	
+	}
+	else
+	{
+		elementType = 'false'
+	}
+   
    $.ajax({
-           url: '<?php echo $this->webroot; ?>users/removeTag/',
+           url: '<?php echo $this->webroot; ?>users/removeElement/'+elementName+'/'+elementType,
            type: "POST",
-           data: 'userId='+ userId +'&tagId=' + tagId,
+           data: 'userId='+ userId +'&id=' + elementId,
            complete: function(req) {
                if (req.status == 200) { //success
                element.remove();
@@ -278,6 +329,10 @@ $(function(){ // wait for document to load
            }
        });
 }
+  
+
+  
+  
   
   
 function removeTag(imageId, tagId)
@@ -315,8 +370,10 @@ function removeTag(imageId, tagId)
     </div>
     <div id="contentRow" class="row-fluid">
       <div id="leftPanel" class="span2">
+      <?php if($this->Session->check('Auth.User')){ ?>
       <h3>Albums</h3>
-      <?php echo $this->element('Album/tree', array('albumTree'=> $albumTree, /*'selectedAlbum'=>$selectedAlbum*/)); ?>
+      <?php echo $this->element('Album/tree', array('albumTree'=>  $this->Session->read('User.cache.albumsTree'), /*'selectedAlbum'=>$selectedAlbum*/)); ?>
+      <?php } ?>
       </div>
       <div id="content" class="span8">
         <?php
@@ -327,8 +384,10 @@ function removeTag(imageId, tagId)
         <?php echo $this->fetch('content'); ?>
       </div>
       <div id="rightPanel" class="span2">
+      <?php if($this->Session->check('Auth.User')){ ?>
     <h3>Tags</h3>
-      <?php echo $this->element('Tag/tree',array('tagsTree'=>$tagsTree))?></div>
+      <?php echo $this->element('Tag/tree',array('tagsTree'=>$this->Session->read('User.cache.tagsTree')))?></div>
+     <?php } ?>
     </div>
     <div id="footer" class="row-fluid">
       <?php echo $this->Html->link(

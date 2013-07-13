@@ -1,13 +1,13 @@
 <div class="userManagementContainer" rel="<?php echo $user['User']['id']; ?>" >
 <h2>Manage users</h2>
-
+<h3><?php echo $user['User']['username']; ?></h3>
 <div class="droppableAvailableAlbum" id="availableAlbum_<?php echo $user['User']['id']; ?>">
   <span>UsersAvailableAlbum</span>
   <div>
   <ul>
    <?php
-foreach ($user['UsersAvailableAlbum'] as $availableAlbum) {
-  echo ('<li>'.$availableAlbum['Album']['relativePath'].'</li>');
+foreach ($user['UsersAvailableAlbum'] as $userAvailableAlbum) {
+  echo '<li>'.$this->element('Album/preview', array('album'=>$userAvailableAlbum, 'class'=>'userAvailableAlbum')).'</li>';
 }
   
   ?> 
@@ -22,7 +22,7 @@ foreach ($user['UsersAvailableAlbum'] as $availableAlbum) {
   <ul>
    <?php
 foreach ($user['UsersForbiddenAlbum'] as $userForbiddenAlbum) {
-  echo ('<li>'.$userForbiddenAlbum['Album']['relativePath'].'</li>');
+  echo '<li>'.$this->element('Album/preview', array('album'=>$userForbiddenAlbum, 'class'=>'userForbiddenAlbum')).'</li>';
 }
   
   ?> 
@@ -46,12 +46,12 @@ foreach ($user['UsersAvailableTag'] as $availableTag) {
 
 
 <div class="droppableForbiddenTag" id="forbiddenTag_<?php echo $user['User']['id']; ?>">
-  <span>UsersAvailableTag</span>
+  <span>UsersForbiddenTag</span>
   <div>
   <ul>
    <?php
 foreach ($user['UsersForbiddenTag'] as $forbiddenTag) {
-  echo ('<li>'.$forbiddenTag['Tag']['name'].'</li>');
+  echo $this->element('Tag/tag', array('tag'=>$forbiddenTag, 'class'=>'userForbiddenTag'));
 }
   
   ?> 

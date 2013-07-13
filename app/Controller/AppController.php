@@ -38,13 +38,13 @@ class AppController extends Controller {
   {
 //     return true;
 
-      $tree = $this->requestAction('/albums/getTree');
+    /*  $tree = $this->requestAction('/albums/getTree');
       $this->set('albumTree',$tree);    
         
       $tagsTree = $this->requestAction('/tagsTrees/getTree');
       $this->set('tagsTree', $tagsTree);
   
-        
+    */
   }
 
   function isAuthorized() {
@@ -57,10 +57,10 @@ class AppController extends Controller {
   
   function beforeFilter() {
     parent::beforeFilter();
-     
     $this->Auth->authError = "Sorry, this page is not available for you!";
     $this->Auth->loginError = "Your password is wrong!";
     $this->Auth->authorize = 'Controller';
+    
      if($this->Auth->user['id'] == 1)
      {
        $this->Auth->allow('*');

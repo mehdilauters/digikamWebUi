@@ -191,7 +191,7 @@ class Image extends AppModel {
     
     if(count($userForbiddenAlbums ) != 0)
     {
-      $queryData['conditions']['Image.album'] = 'not in ('.implode(',', $userForbiddenAlbums).')';
+//       $queryData['conditions']['Image.album'] = 'not in ('.implode(',', $userForbiddenAlbums).')';
     }
     
     
@@ -202,12 +202,12 @@ class Image extends AppModel {
     
  if(count($userForbiddenTags) != 0)
     {
-      $subSqlQuery = 'SELECT imageid from ImageTags where tagid not in ('.implode(',', $userForbiddenTags).')';
+//       $subSqlQuery = 'SELECT imageid from ImageTags where tagid not in ('.implode(',', $userForbiddenTags).')';
     
    
-      $queryData['conditions']['Image.id'] = 'not in ('.$subSqlQuery.')';
+//       $queryData['conditions']['Image.id'] = 'not in ('.$subSqlQuery.')';
     }
-    debug($queryData);
+//     debug($queryData);
     return $queryData;
   }
   
@@ -236,6 +236,7 @@ class Image extends AppModel {
     return $data;
   }
   
+ 
   
   public function redimentionnerImage($source, $destination, $maxWidth, $maxHeight, $minWidth=0, $minHeight=0) {
     // Recuperer l'image original
