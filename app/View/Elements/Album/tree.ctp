@@ -41,7 +41,7 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_curren
       {
         $html .= '<span onClick="$(\'#album_'.$albumId.'\').toggle();" >+</span>';
       }
-      $html .= '<span class="availableAlbum" id="draggableAlbum_'.$albumId.'"> | </span>';
+      $html .= '<span class="availableAlbum" id="draggableAlbum_'.$albumId.'">';
       if($albumId != NULL)
       {
       	$html .= '<a href="'.$webroot.'albums/view/'.$albumId.'" >'.$nodeName.'</a>';
@@ -50,6 +50,7 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_curren
       {
       	$html .= '<span >'.$nodeName.'</span>';
       }
+      $html .= '</span>';
       if($node != null)
       {
         $class = '';

@@ -32,7 +32,7 @@ else
    $rating = false;
    if(isset($data['ImageInformation']))
    {
-   	$rating = $data['ImageInformation']['rating'];
+     $rating = $data['ImageInformation']['rating'];
    
    }
    
@@ -40,16 +40,16 @@ else
    
    if(isset($data['Album']))
    {
-   	$album = $data['Album'];
+     $album = $data['Album'];
    }
-   	else
-   	{
-   		if(isset($image['Album']))
-   		{
-   			$album = $image['Album'];
-   		}
-   	}
-   
+     else
+     {
+       if(isset($image['Album']))
+       {
+         $album = $image['Album'];
+       }
+     }
+   //debug($album);
    
    
 // if(isset($image['ImageInformation']))

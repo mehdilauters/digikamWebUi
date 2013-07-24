@@ -23,11 +23,13 @@ body {
 
 #leftPanel{
 	height:100%;
+	min-height:600px;
 	overflow-y : auto;
 }
 
 #rightPanel{
 	height:100%;
+	min-height:600px;
 	float:right;
 	overflow-y : auto;
 	margin-left: 2px;
@@ -36,6 +38,7 @@ body {
 
 #content{
 	height:100%;
+	min-height:600px;
 	overflow-y : auto;
 }
 
@@ -43,6 +46,15 @@ body {
 #contentRow{
 	height:600px;
 }
+
+.tag a{
+	color:white;
+}
+
+.album  a{
+	color:white;
+}
+
 .imagePreviewContainer:hover{
 	border: 1px solid black;
 }

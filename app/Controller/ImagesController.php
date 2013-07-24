@@ -34,6 +34,12 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
         'contain'   => array('Album', 'ImagePosition','ImageTag.Tag', 'ImageTag.Tag.ImageTagProperty', 'ImageInformation')
         );
     $image = $this->Image->find('first', $options);
+    
+    if(! $this->isAvailable($image))
+    {
+    	throw new ForbiddenException('Frobidden');
+    }
+    
     $this->set('image', $image);
   }
 
@@ -185,7 +191,10 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
   {
   	return (!$this->areTagsForbidden($image) && !$this->isAlbumForbidden($image))
   				 && 
-  			($this->isAlbumAvailable($image) || $this->areTagsAvailable($image)); 
+  			($this->isAlbumAvailable($image) || $this->areTagsAvailable($image))
+  			||
+  			$this->Auth->user('id') == 1
+  	; 
   	
   }
   
@@ -283,7 +292,7 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     parent::beforeFilter();
     if($this->Auth->loggedIn())
     {
-          $this->Auth->allow('download');  
+          $this->Auth->allow('download', 'view');
     }
   }
 }

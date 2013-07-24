@@ -32,7 +32,7 @@ $lastName = $path[ count($path) - 1 ];
 	</dl>
 </div>
 <div class="related">
-	<h3><?php echo __('Related Images'); ?></h3>
+	<h3><?php echo __('Related Images').' ('.count($album['Image']).')'; ?></h3>
 	<?php if (!empty($album['Image'])): ?>
 	<ul class="thumbnails">
 	<?php foreach ($album['Image'] as $image): ?>

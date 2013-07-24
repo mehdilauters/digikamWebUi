@@ -104,6 +104,8 @@ class AlbumsController extends AppController {
     	throw new ForbiddenException('Frobidden');
     }
     
+    
+    
     $options = array('conditions' => array('Album.' . $this->Album->primaryKey => $id),
 //     				'joins' => array( 
 //     						'type'=>'INNER JOIN',
@@ -114,6 +116,8 @@ class AlbumsController extends AppController {
 //            ),
                      'contain'   => array('AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation')
     );
+    
+    
     $album = $this->Album->find('first', $options);
     foreach ($album['Image'] as $id => $image) {
     	$album['Image'][$id]['Album']['id'] = $album['Album']['id'];

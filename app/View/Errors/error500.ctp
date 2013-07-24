@@ -21,9 +21,12 @@
 <p class="error">
 	<strong><?php echo __d('cake', 'Error'); ?>: </strong>
 	<?php echo __d('cake', 'An Internal Error Has Occurred.'); ?>
+	Please check yours <a href="#installation">application settings</a>
 </p>
 <?php
 if (Configure::read('debug') > 0):
 	echo $this->element('exception_stack_trace');
 endif;
+
+echo $this->element('Credits/about');
 ?>

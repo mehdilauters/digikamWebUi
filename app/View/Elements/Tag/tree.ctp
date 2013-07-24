@@ -28,7 +28,7 @@ function displaySubTree($webroot, $subTree, &$stack = null)
    	if($displayTag)
    	{
    	  $stack[] = $data['Tag']['id'];
-      $output .= '<li><span id="draggableTag_'.$data['Tag']['id'].'" class="label draggableTag availableTag"><a href="'.$webroot.'tags/view/'.$data['Tag']['id'].'" >'.$data['Tag']['name'].'</a></span><ul>';
+      $output .= '<li><span id="draggableTag_'.$data['Tag']['id'].'" class="tag label label-success draggableTag availableTag"><a href="'.$webroot.'tags/view/'.$data['Tag']['id'].'" >'.$data['Tag']['name'].'</a></span><ul>';
       $output .= displaySubtree($webroot, $data['children'], $stack);
       $output .= '</ul></li>';
    	}

@@ -62,273 +62,82 @@ function resize()
   contentHeight = winHeight - (headerHeight + footerHeight);
 
   $("#contentRow").height(contentHeight);
-/*
 
-  winWidth = $(window).width();
-  leftPanelWidth = $("#leftPanel").width();
-  rightPanelWidth = $("#right²Panel").width();
-
-  contentWidth = winWidth - (leftPanelWidth + rightPanelWidth );
-  $("#content").width(contentWidth); */
   
 }
 
-$(function(){ // wait for document to load
+$(function(){
 
-// layout definition
- resize();
+	// layout definition
+	 resize();
 
- 
+	 
 
- $(window).resize(resize);
-  
-  $('.imageRate').rating({
-    callback: function(value, link){
-      photoId = $(this).attr('rel');
-      
-      if(value == undefined)
-      {
-        value = -1;
-      }
-      url = "<?php echo $this->webroot; ?>images/rate/"+photoId;
-      $("#rate_container_"+photoId).fadeTo(600, 0.4, function() {
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: 'rating=' + value,
-                complete: function(req) {
-                    if (req.status == 200) { //success
-                      $("#rate_container_"+photoId).fadeTo(600, 1);
-                    } else { //failure
-                        alert(req.responseText);
-                        $("#rate_container_"+photoId).fadeTo(2200, 1);
-                    }
-                }
-            });
-      });
-    },
-      cancelValue: '-1',
-      
-      });
+	 $(window).resize(resize);
 
-  /******TAGS******/
-  //tag
-  
-  
-   $( ".availableTag" ).draggable({
-     revertDuration: 600,
-     revert:true,
-     helper : 'clone',
-     start: function (event, ui) {
-       console.log($(this));
-           $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
-           $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
-       },
+	  $('.imageRate').rating({
+			 cancelValue: '-1',
+			 callback: function(value, link){
+				 photoId = $(this).attr('rel');
+			      
+			      if(value == undefined)
+			      {
+			        value = -1;
+			      }
 
-       });
+			      url = "<?php echo $this->webroot; ?>images/rate/"+photoId;
+			      
 
-   $( ".availableAlbum" ).draggable({
-     revertDuration: 600,
-     revert:true,
-     helper : 'clone',
-     start: function (event, ui) {
-       console.log($(this));
-           $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
-           $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
-       },
+			      $("#rate_container_"+photoId).fadeTo(600, 0.4, function() {
+			    	  $.ajax({
+			    		  url: url,
+			              type: "POST",
+			              data: 'rating=' + value,
+			              complete: function(req) {
+			            	  if (req.status == 200) { //success
+			            		  $("#rate_container_"+photoId).fadeTo(600, 1);
+			            	  }
+			            	  else
+			            	  {
+			            		  alert(req.responseText);
+			                        $("#rate_container_"+photoId).fadeTo(2200, 1);
+			            	  }
+				            	 
 
-       });
-    
+				            	  }
+
+				              }
+				    	  );
+				      
+			    	  
+
+				      });
+			      
+		      }
+		  });
 
 
-   $( ".droppableAvailableAlbum" ).droppable({
-      activeClass: 'drop-active',
-      hoverClass: 'drop-hover',
-       accept: ".availableAlbum",
-     drop: function( event, ui ) {
-       element = $(this);
-       element.fadeTo(600, 0.5);
-       albumId = ui.draggable.attr('id').replace('draggableAlbum_','');
-       userId = $(".userManagementContainer").attr('rel');
-       action = element.attr('rel');
-       $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addAlbum' ,
-                type: "POST",
-                data: 'userId='+userId+'&albumId=' + albumId,
-                complete: function(req) {
-                    if (req.status == 200) { //success
-                      element.fadeTo(600, 1);
-                      $("#availableAlbum_"+userId).append(req.responseText);
-                    } else { //failure
-                        alert(req.responseText);
-                        //$("#rate_container_"+photoId).fadeTo(2200, 1);
-                    }
-                }
-            });
-     }
-     });
-     
-      $( ".droppableForbiddenAlbum" ).droppable({
-      activeClass: 'drop-active',
-      hoverClass: 'drop-hover',
-       accept: ".availableAlbum",
-     drop: function( event, ui ) {
-       element = $(this);
-       element.fadeTo(600, 0.5);
-       albumId = ui.draggable.attr('id').replace('draggableAlbum_','');
-       userId = $(".userManagementContainer").attr('rel');
-       action = element.attr('rel');
-       $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addAlbum/false' ,
-                type: "POST",
-                data: 'userId='+userId+'&albumId=' + albumId,
-                complete: function(req) {
-                    if (req.status == 200) { //success
-                      element.fadeTo(600, 1);
-                      $("#forbiddenAlbum_"+userId).append(req.responseText);
-                    } else { //failure
-                        alert(req.responseText);
-                        //$("#rate_container_"+photoId).fadeTo(2200, 1);
-                    }
-                }
-            });
-     }
-     });
+	  /******TAGS******/
+	  //tag
+	  
+	  
+	   $( ".availableTag" ).draggable({
+	     revertDuration: 600,
+	     revert:true,
+	     helper : 'clone',
+	     start: function (event, ui) {
+	       console.log($(this));
+	           $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
+	           $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
+	       },
 
-   
-      $( ".droppableAvailableTag" ).droppable({
-      activeClass: 'drop-active',
-      hoverClass: 'drop-hover',
-       accept: ".availableTag",
-     drop: function( event, ui ) {
-       element = $(this);
-       element.fadeTo(600, 0.5);
-       tagId = ui.draggable.attr('id').replace('draggableTag_','');
-       userId = $(".userManagementContainer").attr('rel');
-       $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addTag',
-                type: "POST",
-                data: 'userId='+userId+'&tagId=' + tagId,
-                complete: function(req) {
-                    if (req.status == 200) { //success
-                      element.fadeTo(600, 1);
-                      console.log(req.responseText);
-                      $("#availableTag_"+userId).append(req.responseText);
-                    } else { //failure
-                        alert(req.responseText);
-                        //$("#rate_container_"+photoId).fadeTo(2200, 1);
-                    }
-                }
-            });
-     }
-     });
-   
-   
-   
-       $( ".droppableForbiddenTag" ).droppable({
-      activeClass: 'drop-active',
-      hoverClass: 'drop-hover',
-       accept: ".availableTag",
-     drop: function( event, ui ) {
-       element = $(this);
-       element.fadeTo(600, 0.5);
-       tagId = ui.draggable.attr('id').replace('draggableTag_','');
-       userId = $(".userManagementContainer").attr('rel');
-       $.ajax({
-                url: '<?php echo $this->webroot; ?>users/addTag/false',
-                type: "POST",
-                data: 'userId='+userId+'&tagId=' + tagId,
-                complete: function(req) {
-                    if (req.status == 200) { //success
-                      element.fadeTo(600, 1);
-                      console.log(req.responseText);
-                      $("#forbiddenTag_"+userId).append(req.responseText);
-                    } else { //failure
-                        alert(req.responseText);
-                        //$("#rate_container_"+photoId).fadeTo(2200, 1);
-                    }
-                }
-            });
-     }
-     });
-   
+	       });
+
+
        
-   $( ".droppableImageTag" ).droppable({
-    activeClass: 'drop-active',
-    hoverClass: 'drop-hover',
-     accept: ".availableTag",
-   drop: function( event, ui ) {
-     element = $(this);
-     element.fadeTo(600, 0.5);
-     tagId = ui.draggable.attr('id').replace('draggableTag_','');
-     imageId = $(this).attr('id').replace('previewContainer_','');
-     $.ajax({
-              url: '<?php echo $this->webroot; ?>images/tag/'+imageId,
-              type: "POST",
-              data: 'tagId=' + tagId,
-              complete: function(req) {
-                  if (req.status == 200) { //success
-                    element.fadeTo(600, 1);
-                    console.log(req.responseText);
-                    $("#tagsPhoto_"+imageId).append(req.responseText);
-                  } else { //failure
-                      alert(req.responseText);
-                      //$("#rate_container_"+photoId).fadeTo(2200, 1);
-                  }
-              }
-          });
-   }
-   });
-
-   $(".userAvailableAlbum").each(function() {
-	   albumId = $(this).attr('id').replace('album_', '');
-       userId = $(".userManagementContainer").attr('rel');
-       $(this).append('<div oncliCk="removeUserElement('+userId+', \'album\', '+albumId+', true)" >remove</div>')});
-
-   $(".userForbiddenAlbum").each(function() {
-	   albumId = $(this).attr('id').replace('album_', '');
-       userId = $(".userManagementContainer").attr('rel');
-       $(this).append('<div oncliCk="removeUserElement('+userId+', \'album\', '+albumId+', false)" >remove</div>')});
-   
-     $(".userAvailableTag").each(function() {
-          tagId = $(this).attr('id').replace('tag_', '');
-          userId = $(".userManagementContainer").attr('rel');
-          $(this).append('<div oncliCk="removeUserElement('+userId+', \'tag\', '+tagId+', true)" >remove</div>')});
-
-     $(".userForbiddenTag").each(function() {
-         tagId = $(this).attr('id').replace('tag_', '');
-         userId = $(".userManagementContainer").attr('rel');
-         $(this).append('<div oncliCk="removeUserElement('+userId+', \'tag\', '+tagId+', false)" >remove</div>')});
-  });
+});
 
 
-  
-  function removeUserElement(userId, elementName, elementId, available)
-{
-   element = $("#"+elementName+"_"+elementId);
-   element.fadeTo(600, 0.5);
-	if(available)
-	{
-		elementType = ''; 	
-	}
-	else
-	{
-		elementType = 'false'
-	}
-   
-   $.ajax({
-           url: '<?php echo $this->webroot; ?>users/removeElement/'+elementName+'/'+elementType,
-           type: "POST",
-           data: 'userId='+ userId +'&id=' + elementId,
-           complete: function(req) {
-               if (req.status == 200) { //success
-               element.remove();
-               } else { //failure
-                   alert(req.responseText);
-               }
-           }
-       });
-}
   
 
   
@@ -374,6 +183,7 @@ function removeTag(imageId, tagId)
       <h3>Albums</h3>
       <?php echo $this->element('Album/tree', array('albumTree'=>  $this->Session->read('User.cache.albumsTree'), /*'selectedAlbum'=>$selectedAlbum*/)); ?>
       <?php } ?>
+      
       </div>
       <div id="content" class="span8">
         <?php
