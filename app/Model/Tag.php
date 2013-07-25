@@ -63,4 +63,14 @@ class Tag extends AppModel {
         ),
         );
       
+    
+//     public $hasAndBelongsToMany = array(
+//     		'Image' => array(
+//     				'className' => 'Image',
+//     				'joinTable' => 'ImageTags',
+//     				'foreignKey' => 'tagid',
+//     				'associationForeignKey' => 'id',
+//     				'unique' => 'keepExisting'
+//     		)
+//     );
 }

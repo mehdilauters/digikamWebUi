@@ -20,7 +20,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('Helper', 'View');
+App::uses('HtmlHelper', 'View/Helper');
 
 /**
  * Application helper
@@ -30,5 +30,31 @@ App::uses('Helper', 'View');
  *
  * @package       app.View.Helper
  */
-class AppHelper extends Helper {
+class MyHtmlHelper extends HtmlHelper {
+	
+	function link($title, $url = NULL, $options = array(), $confirmMessage = false)
+	{
+		if(!is_array($url))
+		{
+			return parent::link($title,$url.$this->getLinkTitle($title), $options , $confirmMessage);
+		}
+		else
+			return parent::link($title, $url, $options , $confirmMessage );
+	}
+	
+	function getLinkTitle($title)
+	{
+// 		return '';
+		return '/'.$this->escapeLink($title);
+	}
+	
+	function escapeLink($title)
+	{
+	
+		$replace=array(' ','ê','é','&','"','\'','(','è','ç','à',')','=','+','~','#','{','[','|','`','\\','^','@',']','î','ï','ô');
+		$by=array('-','e','e','-','-','-','-','e','c','a','-','-','-','-','-','-','-','-','-','-','-','-','-','i','i','o');
+	
+	
+		return str_replace($replace,$by,$title);
+	}
 }

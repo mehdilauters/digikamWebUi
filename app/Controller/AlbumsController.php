@@ -114,11 +114,15 @@ class AlbumsController extends AppController {
 //                  'on'=> 
 //                  'ImageTag.tagid not in ('.implode($this->Session->read('Rights.UserForbiddenTags'), ', ').')'
 //            ),
-                     'contain'   => array('AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation')
+                     'contain'   => array( 'AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation')
     );
     
     
     $album = $this->Album->find('first', $options);
+    
+    $this->set('title_for_layout', 'Album / '.$album['Album']['relativePath']);
+    
+    //debug($album);
     foreach ($album['Image'] as $id => $image) {
     	$album['Image'][$id]['Album']['id'] = $album['Album']['id'];
     	$album['Image'][$id]['Album']['relativePath'] = $album['Album']['relativePath'];

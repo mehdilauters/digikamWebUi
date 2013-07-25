@@ -33,6 +33,7 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
   var $components    = array('DebugKit.Toolbar','Session','Auth'=>array('Form' => array()),'RequestHandler');
+  var $helpers = array('MyHtml');
 
   public function beforeRender()
   {

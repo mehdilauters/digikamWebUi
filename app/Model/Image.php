@@ -13,6 +13,9 @@ class Image extends AppModel {
  */
   public $useTable = 'Images';
   public $actsAs = array('Containable');
+  
+  
+  
 /**
  * Validation rules
  *
@@ -170,6 +173,16 @@ class Image extends AppModel {
       'counterQuery' => ''
     ),
   );
+  
+//   public $hasAndBelongsToMany = array(
+//   		'Tag' => array(
+//   				'className' => 'Tag',
+//   				'joinTable' => 'ImageTags',
+//   				'foreignKey' => 'imageid',
+//   				'associationForeignKey' => 'id',
+//   				'unique' => 'keepExisting'
+//   		)
+//   );
   
 
   public function beforeFind($queryData)

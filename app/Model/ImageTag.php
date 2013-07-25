@@ -56,7 +56,8 @@ class ImageTag extends AppModel {
       'foreignKey' => 'tagid',
       'conditions' => '',
       'fields' => '',
-      'order' => ''
+      'order' => '',
+    		'recursive'=>-1
     ),
         'Image' => array(
       'className' => 'Image',

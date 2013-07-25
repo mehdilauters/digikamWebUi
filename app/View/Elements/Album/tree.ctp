@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 </script>
 <?php
-function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_currentPath = '')
+function getHtmlSubMenu(&$myHtml, $selectedAlbum, $rootNode, &$rootIds, $_currentPath = '')
 {
   
   
@@ -44,7 +44,8 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_curren
       $html .= '<span class="availableAlbum" id="draggableAlbum_'.$albumId.'">';
       if($albumId != NULL)
       {
-      	$html .= '<a href="'.$webroot.'albums/view/'.$albumId.'" >'.$nodeName.'</a>';
+	  		$html .= $myHtml->link($nodeName, '/albums/view/'.$albumId);
+//       	$html .= '<a href="'.$webroot.'albums/view/'.$albumId.'" >'.$nodeName.'</a>';
       }
       else
       {
@@ -74,7 +75,7 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_curren
         $html .= '<div class="'.$class.' albumContent" id="album_'.$albumId.'" >';
 //         debug($selectedAlbum);
 //         debug($nodeName);
-        $html .= getHtmlSubMenu($webroot, null/*array_values($selectedAlbum)*/, $node, $rootIds, $currentPath);
+        $html .= getHtmlSubMenu($myHtml, null/*array_values($selectedAlbum)*/, $node, $rootIds, $currentPath);
         $html .= '<div/>';
       }
       
@@ -86,6 +87,6 @@ function getHtmlSubMenu($webroot, $selectedAlbum, $rootNode, &$rootIds, $_curren
 ?>
 <div id="albumMenuTree" >
 <?php 
-echo getHtmlSubMenu($this->webroot,null, $albumTree['tree'], $albumTree['ids']);
+echo getHtmlSubMenu($this->MyHtml, null, $albumTree['tree'], $albumTree['ids']);
 ?>
 </div>

@@ -33,18 +33,43 @@ class TagsController extends AppController {
        throw new ForbiddenException('Frobidden');
      } 
     
+     $this->Tag->ImageTag->unbindModel(
+     		array('hasMany' => array('Tag'))
+     );
+
+     
     $options = array('conditions' => array('Tag.' . $this->Tag->primaryKey => $id),
-                    'contain'=>array('ImageTag.Image', 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty', 'ImageTag.Image.Album'),
+    		'contain' => array ('ImageTag'),
+// not used because of recursivity
+//                     'contain'=>array('ImageTag.Image' => array('conditions'=>array('ImageTag.tagid'=>-1))
+//                     		, 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty', 'ImageTag.Image.Album'),
                     );
     $tag = $this->Tag->find('first', $options);
+
+    $this->set('title_for_layout', 'Tag / '.$tag['Tag']['name']);
+    
+    ///// used to avoid recursivity
+    $imagesId = array();
+    foreach ($tag['ImageTag'] as $imageTag)
+    {
+    	$imagesId[] = $imageTag['imageid'];
+    }
+    $imagesId = implode(', ', $imagesId);
+    
+    $imageOptions = array(
+    		'conditions' => 'Image.id in ('.$imagesId.')',
+    		);
+    
+    $tag['ImageTag'] = $this->Tag->ImageTag->Image->find('all',$imageOptions);
+////
     
     foreach ($tag['ImageTag'] as $id => $imageTag) {
-    	{
-    		if( in_array($imageTag['Image']['album'], $this->Session->read('Rights.UserForbiddenAlbums') ))
-    		{
-    			unset($tag['ImageTag'][$id]);
-    		}
-    	}
+      {
+        if( in_array($imageTag['Image']['album'], $this->Session->read('Rights.UserForbiddenAlbums') ))
+        {
+          unset($tag['ImageTag'][$id]);
+        }
+      }
     }
     
     $this->set('tag', $tag);

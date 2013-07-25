@@ -211,7 +211,14 @@ function removeTag(imageId, tagId)
   <?php echo $this->element('sql_dump'); ?>
   <script type="text/javascript">
   $(document).ready(function() {
-    $(".fancybox").fancybox();
+    $(".fancybox").fancybox(
+    		{
+    		    type: "image",
+    		    beforeLoad: function() {
+    		        
+    		    }
+    		}
+    	    );
   });
 </script>
 </body>

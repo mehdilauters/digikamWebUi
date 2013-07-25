@@ -62,7 +62,7 @@ else
 
 <div id="previewContainer_<?php echo $data['id']?>" class="imagePreviewContainer droppableImageTag thumbnail">
   <div class="imagePreviewFrame">
-    <a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>" class="fancybox" rel="album" >
+    <a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>"  rel="album" class="fancybox" >
     <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview" src="<?php echo $this->webroot.'images/download/'.$data['id'].'/preview' ?>" alt="<?php echo $data['name'] ?>" />
     </a>
   </div>

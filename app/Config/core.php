@@ -34,6 +34,7 @@
  * In development mode, you need to click the flash message to continue.
  */
   Configure::write('debug', 0);
+  //set_time_limit(60);
 
 /**
  * Configure the Error handler used to handle errors for your application. By default

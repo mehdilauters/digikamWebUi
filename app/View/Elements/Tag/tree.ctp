@@ -1,6 +1,6 @@
 <?php
 
-function displaySubTree($webroot, $subTree, &$stack = null)
+function displaySubTree($myHtml, $subTree, &$stack = null)
 {
 	if($stack == null)
 	{
@@ -28,8 +28,8 @@ function displaySubTree($webroot, $subTree, &$stack = null)
    	if($displayTag)
    	{
    	  $stack[] = $data['Tag']['id'];
-      $output .= '<li><span id="draggableTag_'.$data['Tag']['id'].'" class="tag label label-success draggableTag availableTag"><a href="'.$webroot.'tags/view/'.$data['Tag']['id'].'" >'.$data['Tag']['name'].'</a></span><ul>';
-      $output .= displaySubtree($webroot, $data['children'], $stack);
+      $output .= '<li><span id="draggableTag_'.$data['Tag']['id'].'" class="tag label label-success draggableTag availableTag">'.$myHtml->link($data['Tag']['name'], '/tags/view/'.$data['Tag']['id']).'</span><ul>';
+      $output .= displaySubtree($myHtml, $data['children'], $stack);
       $output .= '</ul></li>';
    	}
    }
@@ -38,5 +38,5 @@ function displaySubTree($webroot, $subTree, &$stack = null)
   
 ?>
 <div class="tagTree" >
-<?php echo displaySubTree($this->webroot, $tagsTree); ?>
+<?php echo displaySubTree($this->MyHtml, $tagsTree); ?>
 </div>
