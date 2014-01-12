@@ -26,7 +26,12 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
  * @return void
  */
   // TODO
-  public function view($id = null) {
+  public function view($id = null, $ajaxPreview = false) {
+    if( $ajaxPreview )
+    {
+      $this->layout = 'ajax'; 
+    }
+    
     if (!$this->Image->exists($id)) {
       throw new NotFoundException(__('Invalid image'));
     }
@@ -37,10 +42,15 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     
     if(! $this->isAvailable($image))
     {
-    	throw new ForbiddenException('Frobidden');
+      throw new ForbiddenException('Frobidden');
     }
     
     $this->set('image', $image);
+    
+     if( $ajaxPreview )
+    {
+     $this->render('ajaxPreview'); 
+    }
   }
 
   public function untag($id)
@@ -152,61 +162,61 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
   
   public function areTagsAvailable($image)
   {
-  	foreach ($image['ImageTag'] as $imageTag)
-  	{
-  		if( in_array($imageTag['tagid'], $this->Session->read('Rights.UserAvailablesTags') ))
-  		{
-  			return true;
-  		}
-  	}
-  	 
-  	return false;
-  	 
+    foreach ($image['ImageTag'] as $imageTag)
+    {
+      if( in_array($imageTag['tagid'], $this->Session->read('Rights.UserAvailablesTags') ))
+      {
+        return true;
+      }
+    }
+     
+    return false;
+     
   }
   
   public function isAlbumAvailable($image)
   {
-  	return in_array($image['Image']['album'], $this->Session->read('Rights.UserAvailablesAlbums'));
+    return in_array($image['Image']['album'], $this->Session->read('Rights.UserAvailablesAlbums'));
   }
   
   public function areTagsForbidden($image)
   {
-  	foreach ($image['ImageTag'] as $imageTag)
-  	{
-  		if( in_array($imageTag['tagid'], $this->Session->read('Rights.UserForbiddenTags') ))
-  		{
-  			return true;
-  		}
-  	}
-  	
-  	return false;
+    foreach ($image['ImageTag'] as $imageTag)
+    {
+      if( in_array($imageTag['tagid'], $this->Session->read('Rights.UserForbiddenTags') ))
+      {
+        return true;
+      }
+    }
+    
+    return false;
   }
   
   public function isAlbumForbidden($image)
   {
-  	return in_array($image['Image']['album'], $this->Session->read('Rights.UserForbiddenAlbums'));
+    return in_array($image['Image']['album'], $this->Session->read('Rights.UserForbiddenAlbums'));
   }
   
   public function isAvailable($image)
   {
-  	return (!$this->areTagsForbidden($image) && !$this->isAlbumForbidden($image))
-  				 && 
-  			($this->isAlbumAvailable($image) || $this->areTagsAvailable($image))
-  			||
-  			$this->Auth->user('id') == 1
-  	; 
-  	
+    return (!$this->areTagsForbidden($image) && !$this->isAlbumForbidden($image))
+           && 
+        ($this->isAlbumAvailable($image) || $this->areTagsAvailable($image))
+        ||
+        $this->Auth->user('id') == 1
+    ; 
+    
   }
   
   public function download($id, $preview = false)
   {
     $photo = $this->Image->findById($id, array(
-//     		'contains' => array('ImageTag.Tag')
-    		));
+//         'contains' => array('ImageTag.Tag')
+        ));
 //     debug($photo);
     if(! $this->isAvailable($photo))
     {
-    	throw new ForbiddenException('Frobidden');
+      throw new ForbiddenException('Forbidden');
     }
     
     
@@ -227,18 +237,19 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     );
     
     
-    if($preview == 'preview')
+    if($preview != false) //'preview')
     {
       
-      $destDir = CACHE.'/';
-      $destFilePath = $destDir.$photo['Image']['uniqueHash'];
-      
+      $destDir = CACHE;
+      $destFile = Configure::read('Image.preview.'.$preview.'.cachePrefix').$photo['Image']['uniqueHash'];;
+      $destFilePath = $destDir.$destFile ;
+
       $params['path'] = $destDir;
-      $params['id'] = $photo['Image']['uniqueHash'];
+      $params['id'] = $destFile;
       
       if( ! file_exists($destFilePath) )
       {
-          $res = $this->Image->redimentionnerImage($photo['Image']['fullPath'], $destFilePath, Configure::read('Image.preview.maxWidth'), Configure::read('Image.preview.maxHeight') );
+          $res = $this->Image->redimentionnerImage($photo['Image']['fullPath'], $destFilePath, Configure::read('Image.preview.'.$preview.'.maxWidth'), Configure::read('Image.preview.'.$preview.'.maxHeight') );
           if($res != true)
           {
             $params['path'] = APP.'webroot/img/';
@@ -259,7 +270,6 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     }
     else
     {
-      $this->viewClass = 'Media';
       $params['cache'] = '+1 day';
       $params['modified'] = '@' . $modified; // Must be a string to work. See MediaView->render()
       $this->set($params);
@@ -292,6 +302,7 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     parent::beforeFilter();
     if($this->Auth->loggedIn())
     {
+    	$this->Auth->allow('rate', 'tag', 'untag');
           $this->Auth->allow('download', 'view');
     }
   }

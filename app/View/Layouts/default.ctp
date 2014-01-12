@@ -50,121 +50,7 @@
     echo $this->fetch('script');
   ?>
 
-  <script type="text/javascript">
-<!--
 
-function resize()
-{
-  winHeight = $(window).height();
-  headerHeight = $("#header").height();
-  footerHeight = $("#footer").height();
-
-  contentHeight = winHeight - (headerHeight + footerHeight);
-
-  $("#contentRow").height(contentHeight);
-
-  
-}
-
-$(function(){
-
-	// layout definition
-	 resize();
-
-	 
-
-	 $(window).resize(resize);
-
-	  $('.imageRate').rating({
-			 cancelValue: '-1',
-			 callback: function(value, link){
-				 photoId = $(this).attr('rel');
-			      
-			      if(value == undefined)
-			      {
-			        value = -1;
-			      }
-
-			      url = "<?php echo $this->webroot; ?>images/rate/"+photoId;
-			      
-
-			      $("#rate_container_"+photoId).fadeTo(600, 0.4, function() {
-			    	  $.ajax({
-			    		  url: url,
-			              type: "POST",
-			              data: 'rating=' + value,
-			              complete: function(req) {
-			            	  if (req.status == 200) { //success
-			            		  $("#rate_container_"+photoId).fadeTo(600, 1);
-			            	  }
-			            	  else
-			            	  {
-			            		  alert(req.responseText);
-			                        $("#rate_container_"+photoId).fadeTo(2200, 1);
-			            	  }
-				            	 
-
-				            	  }
-
-				              }
-				    	  );
-				      
-			    	  
-
-				      });
-			      
-		      }
-		  });
-
-
-	  /******TAGS******/
-	  //tag
-	  
-	  
-	   $( ".availableTag" ).draggable({
-	     revertDuration: 600,
-	     revert:true,
-	     helper : 'clone',
-	     start: function (event, ui) {
-	       console.log($(this));
-	           $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
-	           $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
-	       },
-
-	       });
-
-
-       
-});
-
-
-  
-
-  
-  
-  
-  
-function removeTag(imageId, tagId)
-{
-   element = $("#user_"+userId+"_tag_"+tagId);
-   element.fadeTo(600, 0.5);
-   $.ajax({
-           url: '<?php echo $this->webroot; ?>images/untag/'+imageId,
-           type: "POST",
-           data: 'tagId=' + tagId,
-           complete: function(req) {
-               if (req.status == 200) { //success
-               element.remove();
-               } else { //failure
-                   alert(req.responseText);
-                   //$("#rate_container_"+photoId).fadeTo(2200, 1);
-               }
-           }
-       });
-}
-  
-//-->
-</script>
 </head>
 <body>
   <div id="container" class="container-fluid">
@@ -190,8 +76,13 @@ function removeTag(imageId, tagId)
         echo $this->Session->flash();
         echo $this->Session->flash('auth');
         ?>
-  
-        <?php echo $this->fetch('content'); ?>
+        <center>  
+        <?php         
+        echo $this->Html->image('digikam_logo.png', array('alt' => 'Digikam'));
+        ?>
+        </center>
+        <?php 
+        echo $this->fetch('content'); ?>
       </div>
       <div id="rightPanel" class="span2">
       <?php if($this->Session->check('Auth.User')){ ?>
@@ -212,14 +103,176 @@ function removeTag(imageId, tagId)
   <script type="text/javascript">
   $(document).ready(function() {
     $(".fancybox").fancybox(
-    		{
-    		    type: "image",
-    		    beforeLoad: function() {
-    		        
-    		    }
-    		}
-    	    );
+        {
+            type: "image",
+            //autoDimensions  : true,
+            //width             : 600,
+            //height            : 'auto',
+            showNavArrows: true,
+            titleFormat: function() {console.log('hoooo')},
+            beforeLoad: function() {
+                var id= $(this.element).attr("id").replace("imageLink_", "");
+                //url = "<?php echo $this->webroot ?>images/view/"+id+"/true";
+                url = "<?php echo $this->webroot ?>images/download/"+id+"/big";
+                this.href = url
+                
+                
+                var title = '';
+        /*if (this.index > 0) {
+            title += '<a class="fancybox-nav fancybox-prev" href="#" onclick="$.fancybox.prev();return false;" id="fancybox-prev-btn"><span></span></a>';
+        }*/
+
+        title += '<span class="fancybox-title">' + $(this.element).find('img').attr('alt') + '<span class="fancybox-title-count"> ( ' + (this.index + 1) + ' / ' + this.group.length + ' )</span>';
+        /*  if (this.index < this.group.length - 1) {
+            title += '<div><a href="#" onclick="$.fancybox.next();return false;" id="fancybox-next-btn" class="fancybox-nav fancybox-next" ><span></span></a></div>';
+        }*/
+        this.title = title;
+            }
+        }
+          );
   });
+</script>
+  
+  
+    <script type="text/javascript">
+<!--
+
+function resize()
+{
+  winHeight = $(window).height();
+  headerHeight = $("#header").height();
+  footerHeight = $("#footer").height();
+
+  contentHeight = winHeight - (headerHeight + footerHeight);
+
+  $("#contentRow").height(contentHeight);
+
+  
+}
+
+$(function(){
+
+  // layout definition
+   resize();
+
+   
+
+   $(window).resize(resize);
+
+    $('.imageRate').rating({
+       cancelValue: '-1',
+       callback: function(value, link){
+         photoId = $(this).attr('rel');
+            
+            if(value == undefined)
+            {
+              value = -1;
+            }
+
+            url = "<?php echo $this->webroot; ?>images/rate/"+photoId;
+            
+
+            $("#rate_container_"+photoId).fadeTo(600, 0.4, function() {
+              $.ajax({
+                url: url,
+                    type: "POST",
+                    data: 'rating=' + value,
+                    complete: function(req) {
+                      if (req.status == 200) { //success
+                        $("#rate_container_"+photoId).fadeTo(600, 1);
+                      }
+                      else
+                      {
+                        alert(req.responseText);
+                              $("#rate_container_"+photoId).fadeTo(2200, 1);
+                      }
+                       
+
+                        }
+
+                      }
+                );
+              
+              
+
+              });
+            
+          }
+      });
+
+
+    /******TAGS******/
+    //tag
+    
+    
+     $( ".availableTag" ).draggable({
+       revertDuration: 600,
+       revert:true,
+       helper : 'clone',
+       start: function (event, ui) {
+         console.log($(this));
+             $(ui.helper).css("margin-left", event.clientX - $(event.target).offset().left);
+             $(ui.helper).css("margin-top", event.clientY - $(event.target).offset().top);
+         },
+
+         });
+
+
+       
+});
+
+
+     $( ".droppableImageTag" ).droppable({
+     activeClass: 'drop-active',
+     hoverClass: 'drop-hover',
+      accept: ".availableTag",
+    drop: function( event, ui ) {
+      element = $(this);
+      element.fadeTo(600, 0.5);
+      tagId = ui.draggable.attr('id').replace('draggableTag_','');
+      imageId = $(this).attr('id').replace('previewContainer_','');
+      $.ajax({
+               url: '<?php echo $this->webroot; ?>images/tag/'+imageId,
+               type: "POST",
+               data: 'tagId=' + tagId,
+               complete: function(req) {
+                   if (req.status == 200) { //success
+                     element.fadeTo(600, 1);
+                     console.log(req.responseText);
+                     $(this).append(req.responseText);
+                   } else { //failure
+                       alert(req.responseText);
+                       //$("#rate_container_"+photoId).fadeTo(2200, 1);
+                   }
+               }
+           });
+    }
+    });
+
+  
+  
+  
+  
+function removeTag(imageId, tagId)
+{
+   element = $("#image_"+imageId+"_tag_"+tagId);
+   element.fadeTo(600, 0.5);
+   $.ajax({
+           url: '<?php echo $this->webroot; ?>images/untag/'+imageId,
+           type: "POST",
+           data: 'tagId=' + tagId,
+           complete: function(req) {
+               if (req.status == 200) { //success
+               element.remove();
+               } else { //failure
+                   alert(req.responseText);
+                   //$("#rate_container_"+photoId).fadeTo(2200, 1);
+               }
+           }
+       });
+}
+  
+//-->
 </script>
 </body>
 </html>

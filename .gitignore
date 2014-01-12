@@ -1,6 +1,6 @@
 # User specific & automatically generated files #
 #################################################
-/app/Config/database.php
+#/app/Config/database.php
 app/Model/Datasource/digikam4.db
 /app/tmp
 /lib/Cake/Console/Templates/skel/tmp/

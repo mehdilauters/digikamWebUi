@@ -198,7 +198,7 @@ function addAlbum($available = true)
       $userId = $this->request->data['userId'];
       $id = $this->request->data['id'];
       
-		$Element = ucwords($element);
+    $Element = ucwords($element);
       if (!$this->$Element->exists($id)) {
         throw new NotFoundException(__('Invalid '.$Element));
       }
@@ -209,11 +209,11 @@ function addAlbum($available = true)
 
       if( $available === true )
       {
-      	$modelName = 'UsersAvailable'.$Element;
+        $modelName = 'UsersAvailable'.$Element;
       }
       else
       {
-      	$modelName = 'UsersForbidden'.$Element;
+        $modelName = 'UsersForbidden'.$Element;
       }
       $res = $this->$modelName->find('first', array('conditions'=>array('user_id'=>$userId, $element.'_id'=>$id)));
 
@@ -229,6 +229,11 @@ function addAlbum($available = true)
     if($this->request->is('post'))
     {
       if($this->Auth->login()){
+        $cookie = array();
+        $cookie['username'] = $this->data['User']['username'];
+        $cookie['password'] = $this->data['User']['password'];
+        $this->Cookie->name = 'DigikamWebUiUser';
+        $this->Cookie->write('Auth.User', $cookie, true, '5 Days');
         
         $this->UsersAvailableTag->recursive = -1;
         
@@ -276,6 +281,24 @@ function addAlbum($available = true)
       {
         $this->Session->setFlash('Login Error', 'flash/fail');
       }
+    }
+    else
+    {/*
+       $this->Cookie->name = 'DigikamWebUiUser';
+       $cookie = $this->Cookie->read('Auth');
+        if (!is_null($cookie)) {
+          debug($cookie);
+            if ($this->Auth->login($cookie)) {
+              
+                $this->Session->destroy('Message.Auth'); # clear auth message, just in case we use it.
+              $this->redirect('/');//$this->Auth->redirect());
+            } else {
+                $this->Cookie->destroy('Auth.User'); # delete invalid cookie
+
+                $this->Session->setFlash('Invalid cookie');
+              $this->redirect('login/');
+           }
+    }*/
     }
   }
   

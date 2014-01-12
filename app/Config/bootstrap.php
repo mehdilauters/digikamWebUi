@@ -112,5 +112,11 @@ CakeLog::config('error', array(
   
   
   Configure::write('Digikam.root', '/home');
-  Configure::write('Image.preview.maxWidth', 300);
-  Configure::write('Image.preview.maxHeight', 200);
+  Configure::write('Image.preview.small.maxWidth', 300);
+  Configure::write('Image.preview.small.maxHeight', 200);
+  Configure::write('Image.preview.small.cachePrefix', 'previewSmall_');
+  
+  
+  Configure::write('Image.preview.big.maxWidth', 800);
+  Configure::write('Image.preview.big.maxHeight', 600);
+    Configure::write('Image.preview.big.cachePrefix', 'previewBig_');

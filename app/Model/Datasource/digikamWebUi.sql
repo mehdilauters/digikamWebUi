@@ -10,11 +10,14 @@ DROP TABLE IF EXISTS `users`;
 
 -- sqlite
 
+-- alter table users add rating boolean DEFAULT false, tagging boolean DEFAULT false,
 
 create table if not exists users (
   `id` integer PRIMARY KEY ,
   username varchar(255) not null,
   password varchar(255) ,
+  rating boolean DEFAULT false,
+  tagging boolean DEFAULT false,
   `created` datetime DEFAULT NULL
 );
 

@@ -8,67 +8,77 @@ body {
 }
 
 #container{
-	width:98%;
-	padding-right:0px;
+  width:98%;
+  padding-right:0px;
 }
 
 .drop-active{
-	background-color: #1BA5E0;
+  background-color: #1BA5E0;
 }
 
 .drop-hover{
-	background-color: #097EB0;
+  background-color: #097EB0;
 }
 
 
 #leftPanel{
-	height:100%;
-	min-height:600px;
-	overflow-y : auto;
-	background-color:
+  height:100%;
+  min-height:600px;
+  overflow-y : auto;
+  background-color:
 }
 
 #rightPanel{
-	height:100%;
-	min-height:600px;
-	float:right;
-	overflow-y : auto;
-	margin-left: 2px;
-	margin-right:0px;
+  height:100%;
+  min-height:600px;
+  float:right;
+  overflow-y : auto;
+  margin-left: 2px;
+  margin-right:0px;
 }
 
 #content{
-	height:100%;
-	min-height:600px;
-	overflow-y : auto;
+  height:100%;
+  min-height:600px;
+  overflow-y : auto;
+  margin-left:0px;
+  background-color:#BCBCBC;
 }
 
 
 #contentRow{
-	height:600px;
+  height:600px;
 }
 
 .tag a{
-	color:white;
+  color:white;
 }
 
 .album  a{
-	color:white;
+  color:white;
 }
 
 .imagePreviewContainer:hover{
-	border: 1px solid black;
+  border: 1px solid black;
 }
 
-#imagePreviewFrame{
-	width:300px;
-	height:300px;
+/*#imagePreviewFrame{
+  width:300px;
+  height:300px;
+}*/
+
+.preview_small{
+  
+}
+
+.preview_big{
+  
 }
 
 .imageRateContainer{
-	opacity:0.5;
+  opacity:0.5;
 }
 
 .imagePreviewContainer:hover > .imageRateContainer{
-	opacity:1;
+  opacity:1;
 }

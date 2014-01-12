@@ -1,5 +1,5 @@
 <?php
-// debug($image);
+ //debug($image);
 
 if( ! isset($image['Image']) )
 {
@@ -14,6 +14,20 @@ else
   if( isset($data['ImageTag']))
    {
       $imageTag = $data['ImageTag'];
+   }
+   else
+   {
+      if( isset($image['ImageTag']))
+      {
+         $imageTag = $image['ImageTag'];
+      }
+   }
+
+   $preview = 'small';
+   
+if( isset($size) && $size == 'max' )   
+   {
+   $preview = 'big';
    }
    
 //  if( isset($image['ImageTag']))
@@ -33,7 +47,13 @@ else
    if(isset($data['ImageInformation']))
    {
      $rating = $data['ImageInformation']['rating'];
-   
+   }
+   else
+   {
+     if(isset($image['ImageInformation']))
+     {
+       $rating = $image['ImageInformation']['rating'];
+     }
    }
    
    $album = false;
@@ -63,7 +83,7 @@ else
 <div id="previewContainer_<?php echo $data['id']?>" class="imagePreviewContainer droppableImageTag thumbnail">
   <div class="imagePreviewFrame">
     <a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>"  rel="album" class="fancybox" >
-    <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview" src="<?php echo $this->webroot.'images/download/'.$data['id'].'/preview' ?>" alt="<?php echo $data['name'] ?>" />
+    <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview preview_<?php echo $preview ?>" src="<?php echo $this->webroot.'images/download/'.$data['id'].'/'.$preview ?>" alt="<?php echo $data['name'] ?>" />
     </a>
   </div>
   <?php 
