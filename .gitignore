@@ -1,3 +1,6 @@
+#git update-index --assume-unchanged ignoreme/ignore.txt
+#git update-index --no-assume-unchanged ignoreme/ignore.txt
+
 # User specific & automatically generated files #
 #################################################
 /app/Config/core.php
