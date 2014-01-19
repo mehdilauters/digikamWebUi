@@ -249,7 +249,37 @@ class Image extends AppModel {
     return $data;
   }
   
- 
+  public function crop($source, $destination, $x, $y, $width, $height)
+  {
+    if(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'gif') {
+      $img = imagecreatefromgif($source) ;
+    } // Gif
+    elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpg' || strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpeg') { // Jpg
+      $img = imagecreatefromjpeg($source) ;
+    }
+    elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'png') {
+      $img = imagecreatefrompng($source) ;
+    } // Png
+    else { return false;
+    } // Autres extensions non pris en charge
+    $newImage = imagecreatetruecolor($width, $height) ;
+    imagecopy($newImage, $img, 0, 0, $x, $y, $width, $height);
+
+
+  // Enregistrement de la nouvelle image
+      if(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'gif') {
+        return imagegif($newImage,$destination) ;
+      } // Gif
+      elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpg' || strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpeg') { // Jpg
+        return imagejpeg($newImage,$destination) ;
+      }
+      elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'png') {
+        return imagepng($newImage,$destination) ;
+      } // Png
+  
+    return false; // L'operation ne s'est pas bien deroulee
+
+  }
   
   public function redimentionnerImage($source, $destination, $maxWidth, $maxHeight, $minWidth=0, $minHeight=0) {
     // Recuperer l'image original

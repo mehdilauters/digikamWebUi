@@ -33,9 +33,9 @@ class TagsController extends AppController {
        throw new ForbiddenException('Frobidden');
      } 
     
-     $this->Tag->ImageTag->unbindModel(
-     		array('hasMany' => array('Tag'))
-     );
+//      $this->Tag->ImageTag->unbindModel(
+//      		array('hasMany' => array('Tag'))
+//      );
 
      
     $options = array('conditions' => array('Tag.' . $this->Tag->primaryKey => $id),
@@ -60,7 +60,9 @@ class TagsController extends AppController {
     		'conditions' => 'Image.id in ('.$imagesId.')',
     		);
     
+    $this->Tag->ImageTag->Image->contain( 'ImageTag.ImageTagProperty');
     $tag['ImageTag'] = $this->Tag->ImageTag->Image->find('all',$imageOptions);
+    debug($tag);
 ////
     
     foreach ($tag['ImageTag'] as $id => $imageTag) {

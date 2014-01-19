@@ -95,13 +95,16 @@ public $components = array('Tree');
     $this->redirect(array('action' => 'index'));
   }
   
-  public function getTree()
+  public function getTree($full = false)
   {
   	$conditions = array();
-  	if( $this->Auth->user('id') != 1 ) 
-  	{
-  		$conditions = array('TagsTree.id in ('.implode(', ', $this->Session->read('Rights.UserAvailablesTags')).')');
-  	}
+	if(!$full)
+	{
+	  if( $this->Auth->user('id') != 1 ) 
+	  {
+		  $conditions = array('TagsTree.id in ('.implode(', ', $this->Session->read('Rights.UserAvailablesTags')).')');
+	  }
+	}
   	
   	$this->recursive = -1;
   	$flatTree = $this->TagsTree->find('all', 

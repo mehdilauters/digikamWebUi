@@ -7,6 +7,7 @@
       &nbsp;
     </dd>
   </dl>
+   <div>number of pictures <?php echo count($tag['ImageTag']) ?></div>
   <?php foreach($tag['ImageTag'] as $imageTag)
  {
    echo $this->element('Image/preview', array('image'=>$imageTag));

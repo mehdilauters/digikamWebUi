@@ -66,6 +66,14 @@ class ImageTag extends AppModel {
       'fields' => '',
       'order' => ''
     ),
+      'ImageTagProperty' => array(
+      'className' => 'ImageTagProperty',
+//       'foreignKey' => '',
+      'foreignKey' => 'imageid, tagid',
+//       'conditions' => 'ImageTag.imageid = ImageTagProperty.imageid AND ImageTagProperty.tagid = ImageTag.tagid',
+      'fields' => '',
+      'order' => ''
+    ),
     );
 
   public function delete($id = NULL, $cascade = true)

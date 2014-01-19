@@ -77,16 +77,26 @@ class Album extends AppModel {
      		$data = $this->data;
      	}
 
-     	if( isset($data['Album']['AlbumRoot']))
+	if(isset($data['Album']))
+	{
+	  $data = $data['Album'];
+	}
+
+	if(isset($data['Image']['Album']))
+	{
+	  $data = $data['Image']['Album'];
+	}
+
+     	if( isset($data['AlbumRoot']))
      	{
-     		$albumRoot = $data['Album']; 
+     		$albumRoot = $data; 
      	}
      	else
      	{
-     		$albumRoot =  $this->AlbumRoot->findById($data['Album']['albumRoot']);
+     		$albumRoot =  $this->AlbumRoot->findById($data['albumRoot']);
      	}
 
-     	$path = $this->AlbumRoot->getPath($albumRoot).$data['Album']['relativePath'];
+     	$path = $this->AlbumRoot->getPath($albumRoot).$data['relativePath'];
 //      	debug('album::getPath = '.$path);
      	return $path;
      }

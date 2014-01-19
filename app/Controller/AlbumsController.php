@@ -101,7 +101,7 @@ class AlbumsController extends AppController {
     
     if( ! ( in_array($id, $this->Session->read('Rights.UserAvailablesAlbums')) || $this->Auth->user('id') == 1 ))
     {
-    	throw new ForbiddenException('Frobidden');
+    	throw new ForbiddenException('Forbidden');
     }
     
     
