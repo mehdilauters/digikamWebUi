@@ -34,6 +34,12 @@ More information available at http://lauters.fr/blog/digikamwebui/
 
 To install the web interface in X steps:
 - download the sources and put them into your WWW folder ( ie. /var/www/digikamWebUi )
+- setup your webserver (ie. apache2 ) for CakePhp applications
+    - enable mod_rewrite in apache
+    - change the default for AllowOverride in apache to ALL in your apache configuration file /etc/apache2/sites-enabled/000-default.conf
+    - give to the app/tmp directory the right permissions (write).
+    - be sure to have installed mysql support for php in case you use mysql.
+    - be sure to install sqlite suport in php in case you use sqlite
 - setup databases (file app/config/database.php, doc here http://book.cakephp.org/2.0/en/development/configuration.html )
     - The digikam one (containing the collection): 
           public $default = array(
@@ -54,3 +60,4 @@ To install the web interface in X steps:
 - Login
 - Add users and manage their right
     
+In case of error, you can first refer to the CakePhp documentation http://book.cakephp.org/2.0/en/installation.html
