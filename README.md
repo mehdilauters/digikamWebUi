@@ -57,7 +57,12 @@ To install the web interface in X steps:
             );
 - create the admin user (Which is the first one registered)
     http://localhost/digikamWebUi/users/add
+- check the registered path in app/config/bootstrap.php
+ 	Configure::write('Digikam.root', '/home'); // this path will be prepended to the AlbumRoot.specificPath from the digikam database to get the complete path to the album.
 - Login
 - Add users and manage their right
     
 In case of error, you can first refer to the CakePhp documentation http://book.cakephp.org/2.0/en/installation.html
+Tips
+- To activate debug informations, reasons of 500 errors, warnings... Please set Configure::write('debug', 0); to 2 in app/config/core.php
+- When debug is activated, you can add debug($myVar); to get the content of a var displayed (in app/Controller/ImagesController.php:download

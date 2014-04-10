@@ -223,6 +223,8 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     $this->Image->getPath($photo);
     
     $this->viewClass = 'Media';
+    // To display the path of the picture uncomment the following line
+    // debug($photo['Image']['fullPath']);
     $file_parts = pathinfo($photo['Image']['fullPath']);
      
     $params = array(
