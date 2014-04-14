@@ -249,6 +249,40 @@ class Image extends AppModel {
     return $data;
   }
   
+  
+  
+  /* http://mail.kde.org/pipermail/digikam-users/2013-June/017743.html */
+  public function uniqueHashV2($path = NULL)
+  {
+	
+	$file = fopen($this->data['Image']['fullPath'], 'rb');
+	$specifiedSize = 100 * 1024; // 100 kB
+	
+	$filesize = filesize($this->data['Image']['fullPath']);
+    $size = $filesize;
+	if($specifiedSize < $size)
+	{
+		$size = $specifiedSize;
+	}
+	
+	$md5Content = '';
+	
+	// Read first 100 kB
+	$md5Content .= fread($file, $size);
+	
+	
+	
+	// Read last 100 kB
+    fseek($file, $filesize - $size);
+	$md5Content .= fread($file, $size);
+	
+	$md5 = Security::hash($md5Content, 'md5');
+	debug($md5);
+	fclose($file);
+	
+	return $md5;
+  }
+  
   public function crop($source, $destination, $x, $y, $width, $height)
   {
     if(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'gif') {
