@@ -13,6 +13,7 @@ class Tag extends AppModel {
  */
   public $useTable = 'Tags';
   public $actsAs = array('Containable');
+  public $displayField = 'name';
   
 /**
  * Validation rules
@@ -31,6 +32,19 @@ class Tag extends AppModel {
       ),
     ),
   );
+  
+  
+      public $belongsTo = array(
+    'ParentTag' => array(
+      'className' => 'Tag',
+      'foreignKey' => 'pid',
+      //'associationForeignKey'=>'tagid',
+//       'conditions' => 'Image.imageid = ImageTagProperty.imageid',
+    
+      'fields' => '',
+      'order' => ''
+    ),
+    );
   
     public $hasOne = array(
     'ImageTagProperty' => array(

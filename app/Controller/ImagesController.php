@@ -114,22 +114,156 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     
   }
   
+  
+    function saveFile($filePath = null)
+  {
+    if(empty($this->request->data['Image']['upload']['name']) && $filePath == null)
+    {
+      return false;
+    }
+    
+    if( ! empty($this->request->data['Image']['upload']['name']) )
+    {
+      $filePath = $this->request->data['Image']['upload']['tmp_name'];
+      $filename = $this->request->data['Image']['upload']['name'];
+    }
+    else
+    {
+        $filename = basename($filePath);
+    }
+    
+    
+    $path_parts = pathinfo($filename);
+    $filename = $this->request->data['Image']['upload']['name'];
+    debug($this->request->data['Image']);
+	$album = $this->Image->Album->findById($this->request->data['Image']['album']);
+	$albumPath = $this->Image->Album->getPath($album);
+    if(!empty($this->request->data['Image']['upload']['name']) )
+     {
+       debug($filePath);
+       if(move_uploaded_file($filePath,$albumPath.$filename) != true)
+       {
+         $this->log('move_uploaded_file failed', 'debug');
+         return false;
+       }
+	   $this->request->data['Image']['fullPath'] = $albumPath.$filename;
+     }
+	 else
+	 {
+		$this->log('name empty', 'debug');
+		return false;
+	 }
+    
+    return $filename;
+  }
+  
+  
 /**
  * add method
  *
  * @return void
  */
-  public function add() {
+   public function add() {
     if ($this->request->is('post')) {
-      $this->Image->create();
-      if ($this->Image->save($this->request->data)) {
-        $this->Session->setFlash(__('The image has been saved'));
-        $this->redirect(array('action' => 'index'));
-      } else {
-        $this->Session->setFlash(__('The image could not be saved. Please, try again.'));
+      $ok = true;
+      if($this->upload())
+      {
+        $imgName = $this->saveFile();
+
+        if($imgName == false)
+        {
+          $ok = false;
+          $this->Image->deleteFile();
+          $this->log('Could not save photo','debug');
+          $this->Image->invalidateField('upload','Erreur lors de l\'enregistrement du fichier');
+        }
+		else
+		{
+	
+        $this->request->data['Image']['path'] = $imgName;
+
+		$this->Image->create();
+		$data = $this->request->data;
+		$data['Image']['name'] = $imgName;
+		$data['Image']['status'] = Configure::read('Digikam.Enum.Image.status');
+		$data['Image']['category'] = Configure::read('Digikam.Enum.Image.Category.image');
+		$data['Image']['modificationDate'] = date('c');
+		$data['Image']['fileSize'] = filesize($this->request->data['Image']['fullPath']);
+		
+		
+		$data['Image']['uniqueHash'] = $this->Image->uniqueHashV2($data);
+		debug($data);
+		
+		if ( $this->Image->save($data)) {
+		  $this->Session->setFlash(__('The photo has been saved'),'flash/ok');
+		  
+		  $imgInfo = getimagesize($data['Image']['fullPath']);
+		  debug($imgInfo);
+
+		  $exifData = @exif_read_data($data['Image']['fullPath'], 0, true);  // match to standards
+		  debug($exifData);
+		  $data['ImageInformation']['imageid'] = $this->Image->getInsertID();
+		  $data['ImageMetadata']['imageid'] = $this->Image->getInsertID();
+		  if($exifData != false)
+		  {
+			  
+			 $type = strtoupper ( explode('/',$exifData['FILE']['MimeType'])[1] ) ;
+			  
+			  $data['ImageInformation']['rating'] = -1;
+			  $data['ImageInformation']['creationDate'] = $exifData['EXIF']['DateTimeOriginal'];
+			  $data['ImageInformation']['digitizationDate'] = $exifData['EXIF']['DateTimeDigitized'];
+			  $data['ImageInformation']['orientation'] = $exifData['IFD0']['Orientation'];
+			  $data['ImageInformation']['width'] = $imgInfo[0];
+			  $data['ImageInformation']['height'] = $imgInfo[0];
+			  $data['ImageInformation']['format'] = $type;
+			  $data['ImageInformation']['colorDepth'] = $imgInfo['bits'];
+			  $data['ImageInformation']['colorModel'] = 0;
+			  
+			  
+			  
+			  
+			  $data['ImageMetadata']['make'] = $exifData['IFD0']['Make'];
+			  $data['ImageMetadata']['model'] = $exifData['IFD0']['Model'];
+			  $data['ImageMetadata']['aperture'] = 0;
+			  $data['ImageMetadata']['focalLengthIn35'] = $exifData['EXIF']['FocalLengthIn35mmFilm'];
+			  $data['ImageMetadata']['aperture'] = eval('return ('.$exifData['EXIF']['ApertureValue'].');');
+			  $data['ImageMetadata']['focalLength'] = eval('return ('.$exifData['EXIF']['FocalLength'].');');
+			  $data['ImageMetadata']['exposureTime'] = eval('return ('.$exifData['EXIF']['ExposureTime'].');');
+			  $data['ImageMetadata']['exposureProgram'] = $exifData['EXIF']['ExposureProgram']; 
+			  $data['ImageMetadata']['exposureMode'] = $exifData['EXIF']['ExposureMode']; 
+			  $data['ImageMetadata']['sensitivity'] = 0;
+			  $data['ImageMetadata']['flash'] = $exifData['EXIF']['Flash'];
+			  $data['ImageMetadata']['whiteBalance'] = $exifData['EXIF']['WhiteBalance'];
+			  $data['ImageMetadata']['whiteBalanceColorTemperature'] = 0;
+			  $data['ImageMetadata']['meteringMode'] = $exifData['EXIF']['MeteringMode'];
+			  $data['ImageMetadata']['subjectDistance'] = NULL;
+			  if($exifData['EXIF']['SubjectDistance'] != false )
+			  {
+				$exifData['EXIF']['SubjectDistance'] = eval('return ('.$exifData['EXIF']['SubjectDistance'].');');
+			  }
+			  $data['ImageMetadata']['subjectDistanceCategory'] = 0;
+		 }
+		 
+		debug($data);
+		$this->Image->ImageInformation->save($data);
+		$this->Image->ImageMetadata->save($data);
+		
+		  $this->redirect(array('action' => 'index'));
+		} else {
+		  $this->Image->deleteFile();
+		  $this->Session->setFlash(__('The photo could not be saved. Please, try again.'),'flash/fail');
+		}
+		}
+      }
+      else
+      {
+       $ok = false;
+       $this->log('Could not upload photo','debug');
+       $this->Image->invalidateField('upload','Erreur lors de l\'upload du fichier');
       }
     }
-    $albums = $this->Image->Album->find('list');
+	
+	$albums = $this->Image->Album->find('list');
     $this->set(compact('albums'));
   }
 
@@ -145,9 +279,24 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
       throw new NotFoundException(__('Invalid image'));
     }
     if ($this->request->is('post') || $this->request->is('put')) {
+		$image = $this->Image->findById($id);
+		
+		if($image['Image']['name'] != $this->request->data['Image']['name'])
+		{
+			$this->Image->renameFile($this->request->data['Image']['name'], $image);
+		}
+	
+		$this->request->data['Image']['status'] = Configure::read('Digikam.Enum.Image.status');
+		$this->request->data['Image']['category'] = Configure::read('Digikam.Enum.Image.Category.image');
+		$this->request->data['Image']['modificationDate'] = date('c');	
+	
+		if (!$this->Image->ImagePosition->save($this->request->data)) {
+        $this->log('ImagePosition could not be saved', 'debug');
+      }
+	
       if ($this->Image->save($this->request->data)) {
         $this->Session->setFlash(__('The image has been saved'));
-        $this->redirect(array('action' => 'index'));
+        //$this->redirect(array('action' => 'index'));
       } else {
         $this->Session->setFlash(__('The image could not be saved. Please, try again.'));
       }
@@ -221,7 +370,8 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     
     
     $this->Image->getPath($photo);
-    
+//     debug($this->Image->uniqueHashV2($photo));
+//     return;
     $this->viewClass = 'Media';
     // To display the path of the picture uncomment the following line
     // debug($photo['Image']['fullPath']);
@@ -279,6 +429,39 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     return;
   }
   
+  
+  
+   public function upload()
+  {
+  
+    if (isset($this->request->data['Image']))
+    {
+      if( $this->request->data['Image']['upload']['size'] == 0 )
+      {
+        $this->Image->invalidateField('upload','Please check the size of your image');
+	$this->log("size too big", 'debug');
+        return false;
+      }
+      if( !$this->Image->checkType($this->request->data['Image']['upload']['type']) )
+      {
+        $this->Image->invalidateField('upload','Veuillez fournir une image .png, .jpg');
+
+	$this->log("image type not valid", 'debug');
+        return false;
+      }
+      if(!is_uploaded_file($this->request->data['Image']['upload']['tmp_name']))
+      {
+	$this->log("error is_uploaded_file", 'debug');
+        $this->Image->invalidateField('upload','Erreur lors de l\'upload');
+        return false;
+      }
+    }
+  
+    return true;
+  }
+  
+  
+  
 /**
  * delete method
  *
@@ -292,7 +475,9 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
       throw new NotFoundException(__('Invalid image'));
     }
     $this->request->onlyAllow('post', 'delete');
-    if ($this->Image->delete()) {
+	$img = $this->Image->findById($id);
+    if ($this->Image->delete($id, true)) {
+	  $this->Image->deleteFile($img);
       $this->Session->setFlash(__('Image deleted'));
       $this->redirect(array('action' => 'index'));
     }

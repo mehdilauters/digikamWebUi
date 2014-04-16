@@ -32,4 +32,42 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+	var $controllerInvalidatesFields = array();
+	
+	 public function save($data = null, $validate = true, $fieldList = array())
+  {
+    $res = parent::save($data, $validate, $fieldList);
+    if(!$res)
+    {
+	  $this->log('['.$this->alias."] save error \n===== Validation errors =====\n".Debugger::exportVar($this->validationErrors)."\n===== Data =====".Debugger::exportVar($this->data), 'debug');
+      if ( Configure::read('debug') != 0)
+      {
+        debug('['.$this->alias.'] Save didn\'t work');
+        debug($this->data);
+        debug($this->validationErrors);
+      }
+    }
+    return $res;
+  }
+  
+  
+  
+  /**
+   *  Set a field invalid from the controller
+   *
+   */
+  public function invalidateField($fieldName, $errorMessage = 'This field is not valid')
+  {
+    debug($this->alias.'['.$fieldName.'] invalidated : '.$errorMessage);
+    $this->controllerInvalidatesFields[$fieldName][]=$errorMessage;
+  }
+  
+  
+  public function validates($options = array())
+  {
+//     debug($this->controllerInvalidatesFields);
+    $valide = parent::validates($options);
+    $this->validationErrors = array_merge_recursive($this->validationErrors, $this->controllerInvalidatesFields);
+    return $valide && count($this->controllerInvalidatesFields) == 0;
+  }
 }

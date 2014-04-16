@@ -17,6 +17,12 @@ class TagsController extends AppController {
     $this->set('tags', $this->paginate());
   }
 
+  public function map($id = null)
+  {
+	$this->view($id);
+	$this->layout = 'mapFullScreen';
+  }
+  
 /**
  * view method
  *
@@ -39,7 +45,7 @@ class TagsController extends AppController {
 
      
     $options = array('conditions' => array('Tag.' . $this->Tag->primaryKey => $id),
-    		'contain' => array ('ImageTag'),
+    		'contain' => array ('ImageTag.Image.ImagePosition'),
 // not used because of recursivity
 //                     'contain'=>array('ImageTag.Image' => array('conditions'=>array('ImageTag.tagid'=>-1))
 //                     		, 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty', 'ImageTag.Image.Album'),
@@ -58,11 +64,12 @@ class TagsController extends AppController {
     
     $imageOptions = array(
     		'conditions' => 'Image.id in ('.$imagesId.')',
+			'contain' => array ('ImageTag.Image.ImagePosition'),
     		);
     
     $this->Tag->ImageTag->Image->contain( 'ImageTag.ImageTagProperty');
     $tag['ImageTag'] = $this->Tag->ImageTag->Image->find('all',$imageOptions);
-    debug($tag);
+    // debug($tag);
 ////
     
     foreach ($tag['ImageTag'] as $id => $imageTag) {
@@ -85,6 +92,8 @@ class TagsController extends AppController {
   public function add() {
     if ($this->request->is('post')) {
       $this->Tag->create();
+	  $this->request->data['Tag']['icon'] = 0;
+	  $this->request->data['Tag']['iconkde'] = NULL;
       if ($this->Tag->save($this->request->data)) {
         $this->Session->setFlash(__('The tag has been saved'));
         $this->redirect(array('action' => 'index'));
@@ -92,6 +101,10 @@ class TagsController extends AppController {
         $this->Session->setFlash(__('The tag could not be saved. Please, try again.'));
       }
     }
+	
+	$tags = $this->Tag->find('list');
+	$tags = array('0'=>'') + $tags;
+	$this->set(compact('tags'));
   }
 
 /**

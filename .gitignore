@@ -6,7 +6,7 @@
 /app/Config/core.php
 /app/Config/database.php
 /app/Model/Datasource/digikam4.db
-/app/tmp
+/app/tmp/
 /lib/Cake/Console/Templates/skel/tmp/
 /plugins
 /vendors

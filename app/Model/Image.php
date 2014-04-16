@@ -13,7 +13,7 @@ class Image extends AppModel {
  */
   public $useTable = 'Images';
   public $actsAs = array('Containable');
-  
+  public $displayField = 'name';
   
   
 /**
@@ -65,20 +65,24 @@ class Image extends AppModel {
       'foreignKey' => 'imageid',
       'conditions' => '',
       'fields' => '',
+	  'dependent' => true,
       'order' => ''
+	  
   ),*/
-    /*  'ImageMetadata' => array(
-      'className' => 'ImageMetaData',
+      'ImageMetadata' => array(
+      'className' => 'ImageMetadata',
       'foreignKey' => 'imageid',
       'conditions' => '',
       'fields' => '',
+	  'dependent' => true,
       'order' => ''
-  ),*/
+  ),
       'ImageInformation' => array(
           'className' => 'ImageInformation',
           'foreignKey' => 'imageid',
           'conditions' => '',
           'fields' => '',
+		  'dependent' => true,
           'order' => ''
       ),
     'ImagePosition' => array(
@@ -86,6 +90,7 @@ class Image extends AppModel {
       'foreignKey' => 'imageid',
       'conditions' => '',
       'fields' => '',
+	  'dependent' => true,
       'order' => ''
     )
   );
@@ -224,7 +229,7 @@ class Image extends AppModel {
     return $queryData;
   }
   
-  public function getPath(&$data)
+  public function getPath(&$data = NULL)
   {
     if($data == NULL)
     {
@@ -251,14 +256,75 @@ class Image extends AppModel {
   
   
   
-  /* http://mail.kde.org/pipermail/digikam-users/2013-June/017743.html */
-  public function uniqueHashV2($path = NULL)
+  /* http://mail.kde.org/pipermail/digikam-users/2013-June/017743.html 
+  DImgLoader::uniqueHashV2() in libs/dimg/loaders/dimgloader.cpp
+  
+  
+  
+  QByteArray DImgLoader::uniqueHashV2(const QString& filePath, const DImg* const img)
+{
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::Unbuffered | QIODevice::ReadOnly))
+    {
+        return QByteArray();
+    }
+
+    QCryptographicHash md5(QCryptographicHash::Md5);
+
+    // Specified size: 100 kB; but limit to file size
+    const qint64 specifiedSize = 100 * 1024; // 100 kB
+    qint64 size                = qMin(file.size(), specifiedSize);
+
+    if (size)
+    {
+        QScopedArrayPointer<char> databuf(new char[size]);
+        int read;
+
+        // Read first 100 kB
+        if ((read = file.read(databuf.data(), size)) > 0)
+        {
+            md5.addData(databuf.data(), read);
+        }
+
+        // Read last 100 kB
+        file.seek(file.size() - size);
+
+        if ((read = file.read(databuf.data(), size)) > 0)
+        {
+            md5.addData(databuf.data(), read);
+        }
+    }
+
+    QByteArray hash = md5.result().toHex();
+
+    if (img && !hash.isNull())
+    {
+        const_cast<DImg*>(img)->setAttribute("uniqueHashV2", hash);
+    }
+
+    return hash;
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  */
+  public function uniqueHashV2($image)
   {
 	
-	$file = fopen($this->data['Image']['fullPath'], 'rb');
+	$file = fopen($image['Image']['fullPath'], 'rb');
 	$specifiedSize = 100 * 1024; // 100 kB
 	
-	$filesize = filesize($this->data['Image']['fullPath']);
+	$filesize = filesize($image['Image']['fullPath']);
     $size = $filesize;
 	if($specifiedSize < $size)
 	{
@@ -375,4 +441,52 @@ class Image extends AppModel {
     return true; // L'operation s'est bien deroulee
   }
 
+  
+  function checkType($type)
+  {
+    switch($type)
+    {
+      case 'image/jpeg':
+        break;
+      case 'image/png':
+        break;
+      default:
+        return false;
+        break;
+    }
+    return true;
+  }
+  
+  
+  function deleteFile($img = NULL)
+  {
+	$data = $this->data;
+	if($img != NULL)
+	{
+		$data = $img;
+	}
+	
+	$this->getPath($data);
+	
+    $filename = $data['Image']['fullPath'];
+    if(file_exists ( $filename ))
+      unlink($filename);
+  }
+  
+  function renameFile($newName,$img = NULL)
+  {
+	$data = $this->data;
+	if($img != NULL)
+	{
+		$data = $img;
+	}
+	
+	$this->getPath($data);
+	
+    $filename = $data['Image']['fullPath'];
+	$path = dirname($data['Image']['fullPath']);
+    if(file_exists ( $filename ))
+      return rename($filename, $path.'/'.$newName);
+  }  
+  
 }

@@ -283,7 +283,9 @@ function addAlbum($available = true)
       }
     }
     else
-    {/*
+    {
+		$this->log('loging needed by action '.$this->referer(), 'debug');
+		/*
        $this->Cookie->name = 'DigikamWebUiUser';
        $cookie = $this->Cookie->read('Auth');
         if (!is_null($cookie)) {

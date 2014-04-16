@@ -111,7 +111,7 @@ CakeLog::config('error', array(
   CakePlugin::load('DebugKit');
   
   // this path will be prepended to the AlbumRoot.specificPath from the digikam database to get the complete path to the album.
-  Configure::write('Digikam.root', '/home');
+  Configure::write('Digikam.root', '');
   Configure::write('Image.preview.small.maxWidth', 300);
   Configure::write('Image.preview.small.maxHeight', 200);
   Configure::write('Image.preview.small.cachePrefix', 'previewSmall_');
@@ -120,3 +120,13 @@ CakeLog::config('error', array(
   Configure::write('Image.preview.big.maxWidth', 800);
   Configure::write('Image.preview.big.maxHeight', 600);
     Configure::write('Image.preview.big.cachePrefix', 'previewBig_');
+
+	
+	
+	// Digikam : master/show/project/documents/DBSCHEMA.ODS
+	Configure::write('Digikam.Enum.Image.Category.image', 1);
+	Configure::write('Digikam.Enum.Image.Category.video', 2);
+	Configure::write('Digikam.Enum.Image.status', 1);
+	
+	
+	

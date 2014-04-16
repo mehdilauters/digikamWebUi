@@ -13,6 +13,7 @@ class Album extends AppModel {
  */
   public $useTable = 'Albums';
   public $actsAs = array('Containable');
+  public $displayField = 'relativePath';
 
 /**
  * Validation rules

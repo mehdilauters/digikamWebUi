@@ -1,15 +1,10 @@
 <div class="images form">
-<?php echo $this->Form->create('Image'); ?>
+<?php echo $this->Form->create('Image', array('enctype' => 'multipart/form-data')); ?>
 	<fieldset>
 		<legend><?php echo __('Add Image'); ?></legend>
 	<?php
 		echo $this->Form->input('album');
-		echo $this->Form->input('name');
-		echo $this->Form->input('status');
-		echo $this->Form->input('category');
-		echo $this->Form->input('modificationDate');
-		echo $this->Form->input('fileSize');
-		echo $this->Form->input('uniqueHash');
+		echo $this->Form->input('upload', array('label'=>'fichier', 'type'=>'file'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

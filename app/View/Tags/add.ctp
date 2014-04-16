@@ -1,12 +1,10 @@
 <div class="tags form">
-<?php echo $this->Form->create('Tag'); ?>
+<?php debug($tags);echo $this->Form->create('Tag'); ?>
 	<fieldset>
 		<legend><?php echo __('Add Tag'); ?></legend>
 	<?php
-		echo $this->Form->input('pid');
-		echo $this->Form->input('name');
-		echo $this->Form->input('icon');
-		echo $this->Form->input('iconkde');
+		echo $this->Form->input('pid',array('options'=>$tags));
+		echo $this->Form->input('name', array('type'=>'text'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

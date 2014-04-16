@@ -62,7 +62,7 @@ class DATABASE_CONFIG {
   // Digikam database (can be readOnly)
   public $default = array(
     'datasource' => 'Database/Sqlite',
-   'database' => '/PATH/TO/THE/DIGIKAM/DATABASE/digikam4.db',
+   'database' => '/home/pi/Mehdi/Photos/digikam4.db',
   );
   
 
@@ -70,7 +70,7 @@ class DATABASE_CONFIG {
   // Schema can be found here: app/Model/Datasource/digikamWebUi.sql
    public $digikamWebUi = array(
     'datasource' => 'Database/Sqlite',
-    'database' => '/PATH/TO/THE/DIGIKAM/WEB/UI/DATABASE/digikamWebUi.db',
+    'database' => '/home/pi/Mehdi/Photos/digikamWebUi.db',
   );
 
 
