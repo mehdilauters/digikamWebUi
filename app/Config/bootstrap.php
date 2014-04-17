@@ -112,6 +112,11 @@ CakeLog::config('error', array(
   
   // this path will be prepended to the AlbumRoot.specificPath from the digikam database to get the complete path to the album.
   Configure::write('Digikam.root', '');
+  
+  Configure::write('Image.preview.icon.maxWidth', 96);
+  Configure::write('Image.preview.icon.maxHeight', 96);
+  Configure::write('Image.preview.icon.cachePrefix', 'previewIcon_');
+  
   Configure::write('Image.preview.small.maxWidth', 300);
   Configure::write('Image.preview.small.maxHeight', 200);
   Configure::write('Image.preview.small.cachePrefix', 'previewSmall_');
