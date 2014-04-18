@@ -95,6 +95,9 @@ class GoogleMapHelper extends AppHelper {
   var $defaultTravelMode = "DRIVING";
   // Div ID to dump the step by step directions
   var $defaultDirectionsDiv = null;
+  //Default direction viewPort update
+  var $defaultDirectionViewportUpdate = false;
+  var $defaultSuppressDirectionMarkers = true;
 
   //DEFAULT POLYLINES OPTION (method addPolyline())
   // Line color
@@ -138,6 +141,18 @@ class GoogleMapHelper extends AppHelper {
     $map = "<div id='$id' style='width:$width; height:$height; $style'></div>";
     $map .="
 <script>
+
+
+function computeTotalDistance(result) {
+  var total = 0;
+  var myroute = result.routes[0];
+  for (i = 0; i < myroute.legs.length; i++) {
+    total += myroute.legs[i].distance.value;
+  }
+  total = total / 1000.
+  return total;
+}
+
 var markers = new Array();
 var markersIds = new Array();
 var geocoder = new google.maps.Geocoder();
@@ -336,11 +351,24 @@ infowindow.open(map,markers[index]);
     if( !isset($travelMode) ) $travelMode = $this->defaultTravelMode;
     if( !isset($directionsDiv) ) $directionsDiv = $this->defaultDirectionsDiv;
 
+	$viewPortPreserve = 'true';
+	if($this->defaultDirectionViewportUpdate)
+	{
+		$viewPortPreserve = 'false';
+	}
+	
+	$suppressMarkers = false;
+	if($this->defaultSuppressDirectionMarkers)
+	{
+		$suppressMarkers = true;
+	}
+	
     $directions = "
 <script>
 var {$id}Service = new google.maps.DirectionsService();
 var {$id}Display;
-{$id}Display = new google.maps.DirectionsRenderer();
+var {$id}Distance = 0;
+{$id}Display = new google.maps.DirectionsRenderer({preserveViewport: {$viewPortPreserve}, suppressMarkers:{$suppressMarkers} });
 {$id}Display.setMap({$map_id});
 ";
       if( $directionsDiv != null )
@@ -354,6 +382,8 @@ travelMode: google.maps.TravelMode.{$travelMode}
 };
 {$id}Service.route(request, function(result, status) {
 if (status == google.maps.DirectionsStatus.OK) {
+{$id}Distance = computeTotalDistance(result);
+console.log({$id}Distance);
 {$id}Display.setDirections(result);
 }
 });

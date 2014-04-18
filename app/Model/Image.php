@@ -128,7 +128,7 @@ class Image extends AppModel {
     'ImageComment' => array(
       'className' => 'ImageComment',
       'foreignKey' => 'imageid',
-      'dependent' => false,
+      'dependent' => true,
       'conditions' => '',
       'fields' => '',
       'order' => '',
@@ -141,7 +141,7 @@ class Image extends AppModel {
     'ImageCopyright' => array(
       'className' => 'ImageCopyright',
       'foreignKey' => 'imageid',
-      'dependent' => false,
+      'dependent' => true,
       'conditions' => '',
       'fields' => '',
       'order' => '',
@@ -154,7 +154,7 @@ class Image extends AppModel {
     'ImageTag' => array(
       'className' => 'ImageTag',
       'foreignKey' => 'imageid',
-      'dependent' => false,
+      'dependent' => true,
       'conditions' => '',
       'fields' => '',
       'order' => '',
@@ -167,7 +167,7 @@ class Image extends AppModel {
     'ImageProperty' => array(
       'className' => 'ImageProperty',
       'foreignKey' => 'imageid',
-      'dependent' => false,
+      'dependent' => true,
       'conditions' => '',
       'fields' => '',
       'order' => '',

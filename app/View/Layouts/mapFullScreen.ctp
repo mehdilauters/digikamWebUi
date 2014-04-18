@@ -28,14 +28,33 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
-
+		echo $this->Html->css('jquery-ui/jquery-ui-1.10.3.custom.min');
+		echo $this->Html->css('bootstrap.min');
+		echo $this->Html->css('fancy/jquery.fancybox');
 		//echo $this->Html->css('cake.generic');
 		echo $this->Html->css('mapMain');
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
+		
+		echo $this->Html->script(
+        array(   'jquery-1.9.1.min',
+            'jquery.rating.pack',
+            'jquery.MetaData',
+            'jquery-ui-1.10.3.custom.min',
+           // 'bootstrap.min',
+           // 'jquery.fancybox.pack',
+			//'fancyBox'
+        ),
+        array('inline' => 'false')
+    );
+	
+	echo $this->Html->css('rating/jquery.rating');
 	?>
+	<script>
+	var webroot = '<?php echo $this->webroot ?>';
+</script>
 </head>
 <body>
 	<div id="container">

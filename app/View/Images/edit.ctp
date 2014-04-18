@@ -1,4 +1,5 @@
 <div class="images form">
+<?php echo $this->element('Image/preview',array('image'=>$this->request->data))?>
 <?php echo $this->Form->create('Image'); ?>
 	<fieldset>
 		<legend><?php echo __('Edit Image'); ?></legend>

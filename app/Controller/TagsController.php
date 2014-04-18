@@ -64,7 +64,8 @@ class TagsController extends AppController {
     
     $imageOptions = array(
     		'conditions' => 'Image.id in ('.$imagesId.')',
-			'contain' => array ('ImageTag.Image.ImagePosition'),
+			'contain' => array ('ImageTag.Image.ImagePosition', 'ImageTag.Image.ImageInformation'),
+			'order' => 'ImageInformation.creationDate'
     		);
     
     $this->Tag->ImageTag->Image->contain( 'ImageTag.ImageTagProperty');
@@ -81,7 +82,31 @@ class TagsController extends AppController {
       }
     }
     
+	$minDate = NULL;
+	$maxDate = $minDate;
+	foreach($tag['ImageTag'] as $imageTag)
+	 {
+		$imageDate = new DateTime($imageTag['ImageInformation']['creationDate']);
+		if( $minDate == NULL )
+		{
+			$minDate = $imageDate;
+			$maxDate = $imageDate;
+		}
+		
+		if($imageDate > $maxDate)
+		{
+			$maxDate = $imageDate;
+		}
+		
+		if($imageDate < $minDate)
+		{
+			$minDate = $imageDate;
+		}
+		}
+	
     $this->set('tag', $tag);
+	$this->set('minDate', $minDate);
+	$this->set('maxDate', $maxDate);
   }
 
 /**

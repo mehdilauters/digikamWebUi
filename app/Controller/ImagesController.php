@@ -164,6 +164,9 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
  * @return void
  */
    public function add() {
+   // $test =exif_read_data('/home/pi/Mehdi/Photos/DSCN0693.JPG',0,true);
+   // debug($test['GPS']);
+	// print_r($test);  // match to standards);
     if ($this->request->is('post')) {
       $ok = true;
       if($this->upload())
@@ -202,8 +205,10 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 
 		  $exifData = @exif_read_data($data['Image']['fullPath'], 0, true);  // match to standards
 		  debug($exifData);
+		  print_r($exifData);
 		  $data['ImageInformation']['imageid'] = $this->Image->getInsertID();
 		  $data['ImageMetadata']['imageid'] = $this->Image->getInsertID();
+		  $data['ImagePosition']['imageid'] = $this->Image->getInsertID();
 		  if($exifData != false)
 		  {
 			  
@@ -225,11 +230,31 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 			  $data['ImageMetadata']['make'] = $exifData['IFD0']['Make'];
 			  $data['ImageMetadata']['model'] = $exifData['IFD0']['Model'];
 			  $data['ImageMetadata']['aperture'] = 0;
-			  $data['ImageMetadata']['focalLengthIn35'] = $exifData['EXIF']['FocalLengthIn35mmFilm'];
-			  $data['ImageMetadata']['aperture'] = eval('return ('.$exifData['EXIF']['ApertureValue'].');');
-			  $data['ImageMetadata']['focalLength'] = eval('return ('.$exifData['EXIF']['FocalLength'].');');
-			  $data['ImageMetadata']['exposureTime'] = eval('return ('.$exifData['EXIF']['ExposureTime'].');');
-			  $data['ImageMetadata']['exposureProgram'] = $exifData['EXIF']['ExposureProgram']; 
+			  if( isset($exifData['EXIF']['FocalLengthIn35mmFilm']) )
+			  {
+				$data['ImageMetadata']['focalLengthIn35'] = $exifData['EXIF']['FocalLengthIn35mmFilm'];
+			  }
+			  
+			  if(isset($exifData['EXIF']['ApertureValue']))
+			  {
+				$data['ImageMetadata']['aperture'] = eval('return ('.$exifData['EXIF']['ApertureValue'].');');
+			  }
+			  
+			  if(isset($exifData['EXIF']['FocalLength']))
+			  {
+				$data['ImageMetadata']['focalLength'] = eval('return ('.$exifData['EXIF']['FocalLength'].');');
+			  }
+			  
+			  if(isset($exifData['EXIF']['ExposureTime']))
+			  {
+				$data['ImageMetadata']['exposureTime'] = eval('return ('.$exifData['EXIF']['ExposureTime'].');');
+			  }
+			  
+			  if( isset( $exifData['EXIF']['ExposureProgram'] )) 
+			  {
+				$data['ImageMetadata']['exposureProgram'] = $exifData['EXIF']['ExposureProgram']; 
+			  }
+			  
 			  $data['ImageMetadata']['exposureMode'] = $exifData['EXIF']['ExposureMode']; 
 			  $data['ImageMetadata']['sensitivity'] = 0;
 			  $data['ImageMetadata']['flash'] = $exifData['EXIF']['Flash'];
@@ -237,14 +262,34 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 			  $data['ImageMetadata']['whiteBalanceColorTemperature'] = 0;
 			  $data['ImageMetadata']['meteringMode'] = $exifData['EXIF']['MeteringMode'];
 			  $data['ImageMetadata']['subjectDistance'] = NULL;
-			  if($exifData['EXIF']['SubjectDistance'] != false )
+			  if( isset($exifData['EXIF']['SubjectDistance']) && $exifData['EXIF']['SubjectDistance'] != false )
 			  {
 				$exifData['EXIF']['SubjectDistance'] = eval('return ('.$exifData['EXIF']['SubjectDistance'].');');
 			  }
 			  $data['ImageMetadata']['subjectDistanceCategory'] = 0;
+			  
+			  
+			 if(isset($exifData['GPS']))
+			 {
+				$latHour = eval('return ('.$exifData['GPS']['GPSLatitude'][0].');');
+				$latMin = eval('return ('.$exifData['GPS']['GPSLatitude'][1].');');
+				$latSec = eval('return ('.$exifData['GPS']['GPSLatitude'][2].');');
+				$data['ImagePosition']['latitude'] = $latHour.','.$latMin.$exifData['GPS']['GPSLatitudeRef'];
+				
+				$lngHour = eval('return ('.$exifData['GPS']['GPSLongitude'][0].');');
+				$lngMin = eval('return ('.$exifData['GPS']['GPSLongitude'][1].');');
+				$lngSec = eval('return ('.$exifData['GPS']['GPSLongitude'][2].');');
+				$data['ImagePosition']['longitude'] = $lngHour.','.$lngMin.$exifData['GPS']['GPSLongitudeRef'];;
+				
+				// Haversine formula : Decimal Degrees = Degrees + minutes/60 + seconds/3600
+				$data['ImagePosition']['latitudeNumber'] = $latHour + $latMin/60 + $latSec/3600;
+				$data['ImagePosition']['longitudeNumber'] = $lngHour + $lngMin/60 + $lngSec/3600;
+			 }
+			  
 		 }
 		 
 		debug($data);
+		$this->Image->ImagePosition->save($data);
 		$this->Image->ImageInformation->save($data);
 		$this->Image->ImageMetadata->save($data);
 		

@@ -12,6 +12,7 @@ class ImageProperty extends AppModel {
  * @var mixed False or table name
  */
   public $useTable = 'ImageProperties';
+  public $primaryKey = 'imageid';
 
 /**
  * Validation rules
