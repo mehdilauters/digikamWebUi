@@ -4,11 +4,9 @@
 		<legend><?php echo __('Add Album'); ?></legend>
 	<?php
 		echo $this->Form->input('albumRoot');
-		echo $this->Form->input('relativePath');
+		echo $this->Form->input('relativePath', array('type'=>'text', 'value'=>'/'));
 		echo $this->Form->input('date');
-		echo $this->Form->input('caption');
-		echo $this->Form->input('collection');
-		echo $this->Form->input('icon');
+		echo $this->Form->input('caption', array('type'=>'text'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

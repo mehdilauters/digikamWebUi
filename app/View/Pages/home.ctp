@@ -7,6 +7,9 @@ You can now
 if( AuthComponent::user('id') == 1 )
 {?>
 	<li><a href="<?php echo $this->webroot ?>users" >Manage users</a></li>
+	<li><a href="<?php echo $this->webroot ?>images/add" >Add image</a></li>
+	<li><a href="<?php echo $this->webroot ?>albums/add" >Add album</a></li>
+	<li><a href="<?php echo $this->webroot ?>tag/add" >Add tag</a></li>
 	<?php
 }
  ?>

@@ -146,12 +146,21 @@ class AlbumsController extends AppController {
   public function add() {
     if ($this->request->is('post')) {
       $this->Album->create();
-      if ($this->Album->save($this->request->data)) {
-        $this->Session->setFlash(__('The album has been saved'));
-        $this->redirect(array('action' => 'index'));
-      } else {
-        $this->Session->setFlash(__('The album could not be saved. Please, try again.'));
-      }
+	  $albumRoot = $this->Album->AlbumRoot->findById($this->request->data['Album']['albumRoot']);
+	  $path = Configure::read('Digikam.root').$albumRoot['AlbumRoot']['specificPath'].$this->request->data['Album']['relativePath'];
+	  if(!mkdir($path, 0777, true))
+	  {
+		$this->Session->setFlash(__('Could not create ').$path);
+	  }
+	  else
+	  {
+		  if ($this->Album->save($this->request->data)) {
+			$this->Session->setFlash(__('The album has been saved'));
+			$this->redirect(array('action' => 'index'));
+		  } else {
+			$this->Session->setFlash(__('The album could not be saved. Please, try again.'));
+		  }
+		 }
     }
     $albumRoots = $this->Album->AlbumRoot->find('list');
     $this->set(compact('albumRoots'));
