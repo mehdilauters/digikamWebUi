@@ -68,10 +68,8 @@
     </div>
     <div id="contentRow" class="row-fluid">
       <div id="leftPanel" class="span2">
-      <?php if($this->Session->check('Auth.User')){ ?>
       <h3>Albums</h3>
-      <?php echo $this->element('Album/tree', array('albumTree'=>  $this->Session->read('User.cache.albumsTree'), /*'selectedAlbum'=>$selectedAlbum*/)); ?>
-      <?php } ?>
+      <?php echo $this->element('Album/tree', array('albumTree'=>  $this->Session->read('Cache.albumsTree'), /*'selectedAlbum'=>$selectedAlbum*/)); ?>
       
       </div>
       <div id="content" class="span8">
@@ -88,10 +86,8 @@
         echo $this->fetch('content'); ?>
       </div>
       <div id="rightPanel" class="span2">
-      <?php if($this->Session->check('Auth.User')){ ?>
     <h3>Tags</h3>
-      <?php echo $this->element('Tag/tree',array('tagsTree'=>$this->Session->read('User.cache.tagsTree')))?></div>
-     <?php } ?>
+      <?php echo $this->element('Tag/tree',array('tagsTree'=>$this->Session->read('Cache.tagsTree')))?></div>
     </div>
     <div id="footer" class="row-fluid">
       <?php echo $this->Html->link(

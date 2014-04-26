@@ -9,7 +9,7 @@
 	<tr>
 		<td><?php echo h($user['User']['username']); ?>&nbsp;</td>
 		<td class="actions">
-		<?php if( $user['User']['id'] != 1){ ?>
+		<?php if( $user['User']['id'] != Configure::read('Digikam.rootUser')){ ?>
 			<?php echo $this->Html->link(__('Manage'), array('action' => 'manage', $user['User']['id'])); ?>
 			<?php // echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $user['User']['id']), null, __('Are you sure you want to delete # %s?', $user['User']['id'])); ?>

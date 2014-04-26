@@ -34,7 +34,7 @@ class TagsController extends AppController {
     if (!$this->Tag->exists($id)) {
       throw new NotFoundException(__('Invalid tag'));
     }
-     if( ! ( in_array($id, $this->Session->read('Rights.UserAvailablesTags')) || $this->Auth->user('id') == 1 ))
+     if( ! ( in_array($id, $this->Session->read('Rights.UserAvailablesTags')) || $this->Auth->user('id') == Configure::read('Digikam.rootUser') ))
      {
        throw new ForbiddenException('Frobidden');
      } 
@@ -180,9 +180,7 @@ class TagsController extends AppController {
   
     function beforeFilter() {
     parent::beforeFilter();
-    if($this->Auth->loggedIn())
-    {
-      $this->Auth->allow('view');  
-    }
+    $this->Auth->allow('view'); 
+	$this->Auth->allow('map');
   }
 }

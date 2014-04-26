@@ -44,8 +44,8 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
             'jquery.MetaData',
             'jquery-ui-1.10.3.custom.min',
            // 'bootstrap.min',
-           // 'jquery.fancybox.pack',
-			//'fancyBox'
+            'jquery.fancybox.pack',
+			'fancyBox'
         ),
         array('inline' => 'false')
     );

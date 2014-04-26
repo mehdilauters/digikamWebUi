@@ -4,7 +4,7 @@ You can now
 	<li>Access albums from the left panel</li>
 	<li>Access tags from the right panel</li>
 <?php
-if( AuthComponent::user('id') == 1 )
+if( AuthComponent::user('id') == Configure::read('Digikam.rootUser') )
 {?>
 	<li><a href="<?php echo $this->webroot ?>users" >Manage users</a></li>
 	<li><a href="<?php echo $this->webroot ?>images/add" >Add image</a></li>

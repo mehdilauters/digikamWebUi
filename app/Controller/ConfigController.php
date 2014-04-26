@@ -34,7 +34,7 @@ class ConfigController extends AppController {
   	if(!$confirm)
   		return ;
   	session_destroy();
-  	$this->redirect($this->referer());
+  	$this->redirect('/');
   }
   
  /* 
@@ -161,5 +161,11 @@ class ConfigController extends AppController {
   		$this->Session->setFlash('email envoyé', 'flash/ok');
   		*/
   	}
+  }
+  
+  
+  function beforeFilter() {
+    parent::beforeFilter();
+    $this->Auth->allow('deleteSession');  
   }
 }

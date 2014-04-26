@@ -343,7 +343,7 @@ class Image extends AppModel {
 	$md5Content .= fread($file, $size);
 	
 	$md5 = Security::hash($md5Content, 'md5');
-	debug($md5);
+	// debug($md5);
 	fclose($file);
 	
 	return $md5;

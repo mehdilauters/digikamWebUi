@@ -1,6 +1,16 @@
 <div id="mapHeader" >
 	<div>
-		<div id="buttonGroupLeft" ><a href="#" onclick="return autoplay();">&gt;</a> <?php echo $minDate->format('d/m/Y') ?></div>
+		<div id="buttonGroupLeft" >
+			<button type="button" class="btn btn-default btn-lg" onclick="return autoplay();">
+			  <span class="glyphicon glyphicon-glyphicon-backward"></span> |&lt;
+			</button>
+			<button type="button" class="btn btn-default btn-lg" onclick="return autoplay();">
+			  <span class="glyphicon glyphicon-play"></span> &gt;
+			</button>
+			<button type="button" class="btn btn-default btn-lg" onclick="return autoplay();">
+			  <span class="glyphicon glyphicon-glyphicon-step-forward"></span> &gt;|
+			</button>
+			<?php echo $minDate->format('d/m/Y') ?></div>
 		<div id="sliderContainer">
 			<div id="mapSlider" ></div>
 			<div id="sliderSteps" class="steps"></div>
@@ -105,8 +115,15 @@ foreach($tag['ImageTag'] as $imageTag)
 	var nbDaysDifference = [<?php echo join(',', $nbDaysDifference) ?>];
  </script>
 <div style="display:none;" >
+	
+	
+	
   <?php foreach($tag['ImageTag'] as $imageTag)
  {
+ ?>
+ <img class="imageLoading" src="<?php echo $this->webroot ?>images/download/<?php echo $imageTag['Image']['id'] ?>/icon" />
+ <img class="imageLoading" src="<?php echo $this->webroot ?>images/download/<?php echo $imageTag['Image']['id'] ?>/big" />
+ <?php
    echo $this->element('Image/preview', array('image'=>$imageTag));
  }
  ?>
@@ -171,9 +188,8 @@ var timer1 = null;
 function slideUp()
 {
 	var current = $('#mapSlider').slider('value' );
-	console.log("slide");
 	$('#mapSlider').slider('value', current + <?php echo $dateDiff->days ?>/periode );
-	if($('#mapSlider').slider('value') == <?php echo $dateDiff->days ?>)
+	if($('#mapSlider').slider('value') == <?php echo $dateDiff->days+1 ?>)
 	{
 		clearInterval(timer1);
 	}
@@ -182,22 +198,38 @@ function slideUp()
 
 function autoplay()
 {
+	if(timer1 != null )
+	{
+		clearInterval(timer1);
+	}
 	timer1 = setInterval(slideUp, periode);
 	return false;
 }
+
+var nbLoadedImages = 0;
 
 $(function() {
 
 map_canvas.fitBounds(boundingBox);
 
-console.log(nbDaysDifference);
+
+
+$(".imageLoading").load(function() {
+  nbLoadedImages ++;
+  if(nbLoadedImages == <?php echo count($tag['ImageTag']) ?>)
+  {
+	setTimeout(function(){autoplay();}, 10000);
+  }
+}).each(function() {
+  if(this.complete) $(this).load();
+});
+
 
 var nbDaysDifferenceCount = nbDaysDifference.length;
 	for (var i = 0; i < nbDaysDifferenceCount-1; i++) {
 		max = <?php echo $dateDiff->days ?>;
 		percent = nbDaysDifference[i]*100/max;
-		console.log(percent);
-		$('#sliderSteps').append('<span style="display:inline-block;width: 14px;text-align:left;margin-left: '+percent+'%;">|</span>');
+		$('#sliderSteps').append('<span style="display:inline-block;position:absolute;;margin-left: '+percent+'%;">|</span>');
 	}
 
 
@@ -206,7 +238,7 @@ $( "#mapSlider" ).slider({
 		slide:slideUpdated,
 		change:slideUpdated,
         min: 0,
-        max: <?php echo $dateDiff->days ?>,
+        max: <?php echo $dateDiff->days+1 ?>,
 		});
 		
 });

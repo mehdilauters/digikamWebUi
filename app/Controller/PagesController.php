@@ -78,4 +78,9 @@ class PagesController extends AppController {
     $authorized = parent::isAuthorized();
     return $authorized | true;
   }
+  
+     function beforeFilter() {
+    parent::beforeFilter();
+    $this->Auth->allow('display');  
+  }
 }

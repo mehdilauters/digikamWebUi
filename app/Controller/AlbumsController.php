@@ -20,7 +20,7 @@ class AlbumsController extends AppController {
   public function getTree()
   {
   	$conditions = array();
-  	if( $this->Auth->user('id') != 1 )
+  	if( $this->Auth->user('id') != Configure::read('Digikam.rootUser') )
   	{
   		$conditions = array('Album.id in ('.implode(', ', $this->Session->read('Rights.UserAvailablesAlbums')).')');
   	}
@@ -99,7 +99,7 @@ class AlbumsController extends AppController {
       throw new NotFoundException(__('Invalid album'));
     }
     
-    if( ! ( in_array($id, $this->Session->read('Rights.UserAvailablesAlbums')) || $this->Auth->user('id') == 1 ))
+    if( ! ( in_array($id, $this->Session->read('Rights.UserAvailablesAlbums')) || $this->Auth->user('id') == Configure::read('Digikam.rootUser') ))
     {
     	throw new ForbiddenException('Forbidden');
     }
@@ -216,10 +216,7 @@ class AlbumsController extends AppController {
   
 	function beforeFilter() {
 		parent::beforeFilter();
-		if($this->Auth->loggedIn())
-		{
-			$this->Auth->allow('getTree');
-			$this->Auth->allow('view');
-		}	
+		$this->Auth->allow('getTree');
+		$this->Auth->allow('view');
 	}
 }

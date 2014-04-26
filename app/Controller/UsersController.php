@@ -224,6 +224,36 @@ function addAlbum($available = true)
     }
   }
   
+  function getTokens($userId)
+  {
+		$this->UsersAvailableTag->recursive = -1;
+        
+        $userAvailablesTags = $this->UsersAvailableTag->find('list', array('fields'=>array('tag_id'), 'conditions'=>array('user_id'=>$userId)));
+        $userAvailablesTags = array_values($userAvailablesTags);
+        
+        $this->Session->write('Rights.UserAvailablesTags', $userAvailablesTags );
+       
+        $this->UsersForbiddenTag->recursive = -1;
+        $userForbiddenTags = $this->UsersForbiddenTag->find('list', array('fields'=>array('tag_id'), 'conditions'=>array('user_id'=>$userId)));
+        $this->Session->write('Rights.UserForbiddenTags', $userForbiddenTags);
+       
+       
+        $this->UsersAvailableAlbum->recursive = -1;
+        $userAvailablesAlbum = $this->UsersAvailableAlbum->find('list', array( 'fields'=>array('album_id'), 'conditions'=>array('user_id'=>$userId)));
+        $this->Session->write('Rights.UserAvailablesAlbums', $userAvailablesAlbum );
+        
+        
+        $this->UsersForbiddenAlbum->recursive = -1;
+        $userForbiddenAlbum = $this->UsersForbiddenAlbum->find('list', array('fields'=>array('album_id'), 'conditions'=>array('user_id'=>$userId)));
+        $this->Session->write('Rights.UserForbiddenAlbums', $userForbiddenAlbum );
+        
+      $tree = $this->requestAction('/albums/getTree');
+      $this->Session->write('Cache.albumsTree', $tree );
+        
+      $tagsTree = $this->requestAction('/tagsTrees/getTree');
+      $this->Session->write('Cache.tagsTree', $tagsTree );
+  }
+  
   function login()
   {
     if($this->request->is('post'))
@@ -235,42 +265,7 @@ function addAlbum($available = true)
         $this->Cookie->name = 'DigikamWebUiUser';
         $this->Cookie->write('Auth.User', $cookie, true, '5 Days');
         
-        $this->UsersAvailableTag->recursive = -1;
-        
-        $userAvailablesTags = $this->UsersAvailableTag->find('list', array('fields'=>array('tag_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
-        $userAvailablesTags = array_values($userAvailablesTags);
-        
-        $this->Session->write('Rights.UserAvailablesTags', $userAvailablesTags );
-       
-        $this->UsersForbiddenTag->recursive = -1;
-        $userForbiddenTags = $this->UsersForbiddenTag->find('list', array('fields'=>array('tag_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
-        $this->Session->write('Rights.UserForbiddenTags', $userForbiddenTags);
-       
-       
-        $this->UsersAvailableAlbum->recursive = -1;
-        $userAvailablesAlbum = $this->UsersAvailableAlbum->find('list', array( 'fields'=>array('album_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
-        $this->Session->write('Rights.UserAvailablesAlbums', $userAvailablesAlbum );
-        
-        
-        $this->UsersForbiddenAlbum->recursive = -1;
-        $userForbiddenAlbum = $this->UsersForbiddenAlbum->find('list', array('fields'=>array('album_id'), 'conditions'=>array('user_id'=>$this->Auth->user('id'))));
-        $this->Session->write('Rights.UserForbiddenAlbums', $userForbiddenAlbum );
-        /*
-        $userAvailableTags = $session->read('Rights.UserAvailablesTags');
-        $userForbiddenTags = $session->read('Rights.UserForbiddenTags');
-    
-        $userAvailableAlbums = $session->read('Rights.UserAvailablesAlbums');
-        $userForbiddenAlbums = $session->read('Rights.UserForbiddenAlbums');
-        
-        */
-        
-        
-        
-      $tree = $this->requestAction('/albums/getTree');
-      $this->Session->write('User.cache.albumsTree', $tree );
-        
-      $tagsTree = $this->requestAction('/tagsTrees/getTree');
-      $this->Session->write('User.cache.tagsTree', $tagsTree );
+        $this->getTokens($this->Auth->user('id'));
 
         
         
@@ -316,6 +311,6 @@ function addAlbum($available = true)
     {
           $this->Auth->allow('logout');  
     }
-    $this->Auth->allow('login','add');  
+    $this->Auth->allow('login','add', 'getTokens');  
   }
 }

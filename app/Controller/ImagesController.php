@@ -42,7 +42,7 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     
     if(! $this->isAvailable($image))
     {
-      throw new ForbiddenException('Frobidden');
+      throw new ForbiddenException('Forbidden');
     }
     
     $this->set('image', $image);
@@ -135,12 +135,16 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     
     $path_parts = pathinfo($filename);
     $filename = $this->request->data['Image']['upload']['name'];
-    debug($this->request->data['Image']);
+    // debug($this->request->data['Image']);
 	$album = $this->Image->Album->findById($this->request->data['Image']['album']);
 	$albumPath = $this->Image->Album->getPath($album);
+	if($albumPath != '/')
+	{
+		$albumPath .= '/';
+	}
     if(!empty($this->request->data['Image']['upload']['name']) )
      {
-       debug($filePath);
+       // debug($filePath);
        if(move_uploaded_file($filePath,$albumPath.$filename) != true)
        {
          $this->log('move_uploaded_file failed', 'debug');
@@ -195,17 +199,17 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 		
 		
 		$data['Image']['uniqueHash'] = $this->Image->uniqueHashV2($data);
-		debug($data);
+		// debug($data);
 		
 		if ( $this->Image->save($data)) {
 		  $this->Session->setFlash(__('The photo has been saved'),'flash/ok');
 		  
 		  $imgInfo = getimagesize($data['Image']['fullPath']);
-		  debug($imgInfo);
+		  // debug($imgInfo);
 
 		  $exifData = @exif_read_data($data['Image']['fullPath'], 0, true);  // match to standards
-		  debug($exifData);
-		  print_r($exifData);
+		  // debug($exifData);
+		  // print_r($exifData);
 		  $data['ImageInformation']['imageid'] = $this->Image->getInsertID();
 		  $data['ImageMetadata']['imageid'] = $this->Image->getInsertID();
 		  $data['ImagePosition']['imageid'] = $this->Image->getInsertID();
@@ -288,12 +292,26 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 			  
 		 }
 		 
-		debug($data);
+		// debug($data);
+		
+		if( $this->request->data['ImageTag']['tag_id'] != '' )
+		{
+			$tag = array('ImageTag' => array(
+				  'imageid' => $this->Image->getInsertID(),
+				  'tagid' => $this->request->data['ImageTag']['tag_id'],
+				  ) );
+			  if(! $this->ImageTag->save($tag))
+			  {
+				$this->log('Tag could not be saved', 'debug');
+			  }
+		}
+		
+		
 		$this->Image->ImagePosition->save($data);
 		$this->Image->ImageInformation->save($data);
 		$this->Image->ImageMetadata->save($data);
 		
-		  $this->redirect(array('action' => 'index'));
+		  $this->redirect(array('action' => 'view', $this->Image->getInsertID()) );
 		} else {
 		  $this->Image->deleteFile();
 		  $this->Session->setFlash(__('The photo could not be saved. Please, try again.'),'flash/fail');
@@ -338,6 +356,18 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 		if (!$this->Image->ImagePosition->save($this->request->data)) {
         $this->log('ImagePosition could not be saved', 'debug');
       }
+	
+	if( $this->request->data['ImageTag']['tag_id'] != '' )
+	{
+		$tag = array('ImageTag' => array(
+			  'imageid' => $id,
+			  'tagid' => $this->request->data['ImageTag']['tag_id'],
+			  ) );
+		  if(! $this->ImageTag->save($tag))
+		  {
+			$this->log('Tag could not be saved', 'debug');
+		  }
+	}
 	
       if ($this->Image->save($this->request->data)) {
         $this->Session->setFlash(__('The image has been saved'));
@@ -397,7 +427,7 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
            && 
         ($this->isAlbumAvailable($image) || $this->areTagsAvailable($image))
         ||
-        $this->Auth->user('id') == 1
+        $this->Auth->user('id') == Configure::read('Digikam.rootUser')
     ; 
     
   }
@@ -532,10 +562,10 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
   
   function beforeFilter() {
     parent::beforeFilter();
+	$this->Auth->allow('download', 'view');
     if($this->Auth->loggedIn())
     {
     	$this->Auth->allow('rate', 'tag', 'untag');
-          $this->Auth->allow('download', 'view');
     }
   }
 }

@@ -6,6 +6,12 @@
 		echo $this->Form->input('album');
 		echo $this->Form->input('upload', array('label'=>'fichier', 'type'=>'file'));
 	?>
+	
+		<label>Tag</label>
+	<select name="data[ImageTag][tag_id]">
+		<?php echo $this->element('Tag/tagSelect',array('tagsTree'=>$this->Session->read('Cache.tagsTree')))?></div>
+	</select>
+	
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>
 </div>

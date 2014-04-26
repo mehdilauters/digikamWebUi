@@ -52,3 +52,5 @@ create table if not exists users_forbidden_albums (
   `created` datetime DEFAULT NULL,
   FOREIGN KEY(user_id) REFERENCES users(id)
   );
+  
+  insert into users (id, username, password, created) values (1, "public","", CURRENT_TIMESTAMP);

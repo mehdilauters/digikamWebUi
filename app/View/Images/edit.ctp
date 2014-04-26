@@ -13,9 +13,15 @@
 	<input type="hidden" id="ImagePositionLat" value="<?php echo $this->request->data['ImagePosition']['latitudeNumber'] ?>" name="data[ImagePosition][latitudeNumber]">
 	<input type="hidden" id="ImagePositionLng" value="<?php echo $this->request->data['ImagePosition']['longitudeNumber'] ?>" name="data[ImagePosition][longitudeNumber]">
 	</fieldset>
+	<label>Tag</label>
+	<select name="data[ImageTag][tag_id]">
+		<?php echo $this->element('Tag/tagSelect',array('tagsTree'=>$this->Session->read('Cache.tagsTree')))?></div>
+	</select>
 	
 	
 <?php echo $this->Form->end(__('Submit')); ?>
+
+
 <form onSubmit="return getLatLngFromAddress()">
 <label>Search address</label>
 <input type="text" id="address" >

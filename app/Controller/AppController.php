@@ -32,8 +32,9 @@ App::uses('Controller', 'Controller');
  * @link    http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-  var $components    = array(/*'DebugKit.Toolbar',*/'Session','Auth'=>array('Form' => array()),'RequestHandler', 'Cookie');
+  var $components    = array('DebugKit.Toolbar','Session','Auth'=>array('Form' => array()),'RequestHandler', 'Cookie');
   var $helpers = array('MyHtml');
+  var $uses = array('User');
 
   public function beforeRender()
   {
@@ -49,7 +50,7 @@ class AppController extends Controller {
   }
 
   function isAuthorized() {
-    if($this->Auth->user('id') == 1)
+    if($this->Auth->user('id') == Configure::read('Digikam.rootUser'))
     {
       return true;
     }
@@ -57,15 +58,23 @@ class AppController extends Controller {
   }
   
   function beforeFilter() {
+	static $firstCall = true;
     parent::beforeFilter();
     $this->Auth->authError = "Sorry, this page is not available for you!";
     $this->Auth->loginError = "Your password is wrong!";
     $this->Auth->authorize = 'Controller';
     
-     if($this->Auth->user['id'] == 1)
+	if(!$this->Session->check('Rights') && $firstCall)
+	{
+		$firstCall = false;
+		$user = $this->User->findById(1);
+		$this->requestAction('/users/getTokens/'.$user['User']['id']);
+	}
+     if($this->Auth->user('id') == Configure::read('Digikam.rootUser'))
      {
        $this->Auth->allow('*');
      }
     
   }
+  
 }
