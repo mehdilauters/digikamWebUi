@@ -48,9 +48,16 @@ class AppController extends Controller {
   
     */
   }
+  
+  
+ public function isCommandLineInterface()
+{
+    return (php_sapi_name() === 'cli');
+}
+  
 
   function isAuthorized() {
-    if($this->Auth->user('id') == Configure::read('Digikam.rootUser'))
+    if($this->Auth->user('id') == Configure::read('Digikam.rootUser') || $this->isCommandLineInterface() )
     {
       return true;
     }
@@ -70,7 +77,7 @@ class AppController extends Controller {
 		$user = $this->User->findById(1);
 		$this->requestAction('/users/getTokens/'.$user['User']['id']);
 	}
-     if($this->Auth->user('id') == Configure::read('Digikam.rootUser'))
+     if($this->Auth->user('id') == Configure::read('Digikam.rootUser') || $this->isCommandLineInterface())
      {
        $this->Auth->allow('*');
      }

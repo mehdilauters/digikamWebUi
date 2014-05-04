@@ -381,6 +381,40 @@ class Image extends AppModel {
 
   }
   
+  
+  public function rotate($source, $angle)
+  {
+    if(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'gif') {
+      $img = imagecreatefromgif($source) ;
+    } // Gif
+    elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpg' || strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpeg') { // Jpg
+      $img = imagecreatefromjpeg($source) ;
+    }
+    elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'png') {
+      $img = imagecreatefrompng($source) ;
+    } // Png
+    else { return false;
+    } // Autres extensions non pris en charge
+    
+    $newImage = imagerotate ($img, $angle);
+
+
+  // Enregistrement de la nouvelle image
+      if(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'gif') {
+        return imagegif($newImage,$source) ;
+      } // Gif
+      elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpg' || strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'jpeg') { // Jpg
+        return imagejpeg($newImage,$source) ;
+      }
+      elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'png') {
+        return imagepng($newImage,$source) ;
+      } // Png
+  
+    return false; // L'operation ne s'est pas bien deroulee
+
+  }
+  
+  
   public function redimentionnerImage($source, $destination, $maxWidth, $maxHeight, $minWidth=0, $minHeight=0) {
     // Recuperer l'image original
     $dims = getimagesize($source) ;

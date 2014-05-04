@@ -32,7 +32,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->css('bootstrap.min');
 		echo $this->Html->css('fancy/jquery.fancybox');
 		//echo $this->Html->css('cake.generic');
-		echo $this->Html->css('mapMain');
+		echo $this->Html->css('fullScreenMain');
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
@@ -45,7 +45,8 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
             'jquery-ui-1.10.3.custom.min',
            // 'bootstrap.min',
             'jquery.fancybox.pack',
-			'fancyBox'
+			'fancyBox',
+			'rating'
         ),
         array('inline' => 'false')
     );

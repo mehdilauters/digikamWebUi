@@ -17,10 +17,16 @@ class TagsController extends AppController {
     $this->set('tags', $this->paginate());
   }
 
+    public function slideshow($id = null)
+  {
+	$this->view($id);
+	$this->layout = 'fullScreen';
+  }
+  
   public function map($id = null)
   {
 	$this->view($id);
-	$this->layout = 'mapFullScreen';
+	$this->layout = 'fullScreen';
   }
   
 /**
@@ -45,7 +51,7 @@ class TagsController extends AppController {
 
      
     $options = array('conditions' => array('Tag.' . $this->Tag->primaryKey => $id),
-    		'contain' => array ('ImageTag.Image.ImagePosition'),
+    		'contain' => array ('ImageTag.Image.ImagePosition','ImageTag.Image.ImageInformation'),
 // not used because of recursivity
 //                     'contain'=>array('ImageTag.Image' => array('conditions'=>array('ImageTag.tagid'=>-1))
 //                     		, 'ImageTag.Image.ImageTag', 'ImageTag.Image.ImageTag.Tag','ImageTagProperty', 'ImageTag.Image.Album'),
@@ -182,5 +188,6 @@ class TagsController extends AppController {
     parent::beforeFilter();
     $this->Auth->allow('view'); 
 	$this->Auth->allow('map');
+	$this->Auth->allow('slideshow');
   }
 }

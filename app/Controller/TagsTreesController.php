@@ -100,7 +100,7 @@ public $components = array('Tree');
   	$conditions = array();
 	if(!$full)
 	{
-	  if( $this->Auth->user('id') != Configure::read('Digikam.rootUser') ) 
+	  if( $this->Auth->user('id') != Configure::read('Digikam.rootUser') && !$this->isCommandLineInterface()) 
 	  {
 		  $conditions = array('TagsTree.id in ('.implode(', ', $this->Session->read('Rights.UserAvailablesTags')).')');
 	  }

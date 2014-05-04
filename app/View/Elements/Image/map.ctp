@@ -164,7 +164,6 @@ var maxDate = new Date(<?php echo $maxDate->getTimestamp() ?> * 1000);
 	
 	var imgIdsNb = imgIds.length;
 	for (var i = 0; i < imgIdsNb; i++) {
-		console.log(i);
 		imgId = imgIds[i];
 		imgDate = imgDates[i];
 		

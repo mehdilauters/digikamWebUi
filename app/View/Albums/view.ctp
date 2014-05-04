@@ -3,6 +3,10 @@
 $lastName = $path[ count($path) - 1 ];
 ?>
 <h2><?php echo h($lastName); ?></h2>
+<ul>
+	<li> View as a <?php echo $this->MyHtml->link('slideshow', '/albums/slideshow/'.$album['Album']['id']); ?> </li>
+	<li> View as a <?php echo $this->MyHtml->link('map', '/albums/map/'.$album['Album']['id']); ?> </li>
+</ul>
   <dl>
     <dt><?php echo __('path'); ?></dt>
     <dd>

@@ -20,7 +20,7 @@ class AlbumsController extends AppController {
   public function getTree()
   {
   	$conditions = array();
-  	if( $this->Auth->user('id') != Configure::read('Digikam.rootUser') )
+  	if( $this->Auth->user('id') != Configure::read('Digikam.rootUser') && !$this->isCommandLineInterface() )
   	{
   		$conditions = array('Album.id in ('.implode(', ', $this->Session->read('Rights.UserAvailablesAlbums')).')');
   	}
@@ -87,6 +87,19 @@ class AlbumsController extends AppController {
     return array('tree'=>$tree, 'ids'=>$ids);
   }
   
+  public function map($id = null)
+  {
+	$this->view($id);
+	$this->layout = 'fullScreen';
+  }
+  
+  
+  public function slideshow($id = null)
+  {
+	$this->view($id);
+	$this->layout = 'fullScreen';
+  }
+  
 /**
  * view method
  *
@@ -114,7 +127,7 @@ class AlbumsController extends AppController {
 //                  'on'=> 
 //                  'ImageTag.tagid not in ('.implode($this->Session->read('Rights.UserForbiddenTags'), ', ').')'
 //            ),
-                     'contain'   => array( 'AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation')
+                     'contain'   => array( 'AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation', 'Image.ImagePosition')
     );
     
     
@@ -134,6 +147,36 @@ class AlbumsController extends AppController {
     	  		}    		
     	}
     }
+	
+	$minDate = NULL;
+	$maxDate = $minDate;
+	foreach($album['Image'] as $image)
+	 {
+		if(!isset($image['ImageInformation']['creationDate']))
+		{
+			debug($image);
+		}
+		$imageDate = new DateTime($image['ImageInformation']['creationDate']);
+		if( $minDate == NULL )
+		{
+			$minDate = $imageDate;
+			$maxDate = $imageDate;
+		}
+		
+		if($imageDate > $maxDate)
+		{
+			$maxDate = $imageDate;
+		}
+		
+		if($imageDate < $minDate)
+		{
+			$minDate = $imageDate;
+		}
+		}
+	
+	$this->set('minDate', $minDate);
+	$this->set('maxDate', $maxDate);
+	
     $this->set('album', $album);
     $this->set('selectedAlbum', explode('/',$album['Album']['relativePath']));
   }
@@ -218,5 +261,6 @@ class AlbumsController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow('getTree');
 		$this->Auth->allow('view');
+		$this->Auth->allow('slideshow');
 	}
 }

@@ -114,6 +114,8 @@ CakeLog::config('error', array(
   Configure::write('Digikam.root', '');
   Configure::write('Digikam.rootUser', 2);
   
+  Configure::write('Digikam.defaultAlbumRoot', 1);
+  
   Configure::write('Image.preview.icon.maxWidth', 96);
   Configure::write('Image.preview.icon.maxHeight', 96);
   Configure::write('Image.preview.icon.cachePrefix', 'previewIcon_');
