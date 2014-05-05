@@ -264,10 +264,11 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
     $this->request->onlyAllow('post', 'delete');
 	$img = $this->Image->findById($id);
 	$img = $this->Image->getPath($img);
-    if (!$this->Image->rotate($id, $angle)) {
+    if (!$this->Image->rotate($img['Image']['fullPath'], $angle)) {
 		$this->log('could not rotate #'.$id, 'debug');
 	  }
-	  $this->redirect(array('action' => 'view'),$id);
+	  $this->redirect(array('action' => 'view',$id));
+	  $this->render('view');
 	}
 	
 	public function autoscan()

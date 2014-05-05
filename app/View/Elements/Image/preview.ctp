@@ -96,7 +96,7 @@ if( isset($size) && $size == 'max' )
 			<?php echo $this->Form->postLink(__('rotate left'), array('controller'=>'images', 'action' => 'rotate', $data['id'], 90), null, __('Are you sure you want to rotate left # %s?', $data['id'])); ?>
 		</li>
 		<li>
-			<?php echo $this->Form->postLink(__('rotate right'), array('controller'=>'images', 'action' => 'rotate', $data['id'], 180), null, __('Are you sure you want to rotate right # %s?', $data['id'])); ?>
+			<?php echo $this->Form->postLink(__('rotate right'), array('controller'=>'images', 'action' => 'rotate', $data['id'], 270), null, __('Are you sure you want to rotate right # %s?', $data['id'])); ?>
 		</li>
 	<ul>
   </div>

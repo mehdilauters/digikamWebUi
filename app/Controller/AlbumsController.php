@@ -127,7 +127,8 @@ class AlbumsController extends AppController {
 //                  'on'=> 
 //                  'ImageTag.tagid not in ('.implode($this->Session->read('Rights.UserForbiddenTags'), ', ').')'
 //            ),
-                     'contain'   => array( 'AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation', 'Image.ImagePosition')
+                     'contain'   => array( 'AlbumRoot', 'Image', 'Image.ImageTag', 'Image.ImageTag.Tag', 'Image.ImageTag.Tag.ImageTagProperty', 'Image.ImageInformation', 'Image.ImagePosition'),
+// 		      'order' => 'Image.ImageInformation.creationDate'
     );
     
     

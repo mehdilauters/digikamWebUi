@@ -395,10 +395,7 @@ class Image extends AppModel {
     } // Png
     else { return false;
     } // Autres extensions non pris en charge
-    
-    $newImage = imagerotate ($img, $angle);
-
-
+    $newImage = imagerotate ($img, $angle,0);
   // Enregistrement de la nouvelle image
       if(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'gif') {
         return imagegif($newImage,$source) ;
@@ -408,8 +405,7 @@ class Image extends AppModel {
       }
       elseif(strtolower(pathinfo($source, PATHINFO_EXTENSION)) == 'png') {
         return imagepng($newImage,$source) ;
-      } // Png
-  
+      } // Png 
     return false; // L'operation ne s'est pas bien deroulee
 
   }
