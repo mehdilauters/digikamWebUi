@@ -244,11 +244,20 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 				$lngHour = eval('return ('.$exifData['GPS']['GPSLongitude'][0].');');
 				$lngMin = eval('return ('.$exifData['GPS']['GPSLongitude'][1].');');
 				$lngSec = eval('return ('.$exifData['GPS']['GPSLongitude'][2].');');
-				$data['ImagePosition']['longitude'] = $lngHour.','.$lngMin.$exifData['GPS']['GPSLongitudeRef'];;
+				$data['ImagePosition']['longitude'] = $lngHour.','.$lngMin.$exifData['GPS']['GPSLongitudeRef'];
 				
 				// Haversine formula : Decimal Degrees = Degrees + minutes/60 + seconds/3600
 				$data['ImagePosition']['latitudeNumber'] = $latHour + $latMin/60 + $latSec/3600;
 				$data['ImagePosition']['longitudeNumber'] = $lngHour + $lngMin/60 + $lngSec/3600;
+				if( $exifData['GPS']['GPSLongitudeRef'] == 'W' )
+				{
+					$data['ImagePosition']['longitudeNumber'] *= -1;
+				}
+				
+				if( $exifData['GPS']['GPSLatitudeRef'] == 'S' )
+				{
+					$data['ImagePosition']['latitudeNumber'] *= -1;
+				}
 			 }
 			  
 		 }
@@ -369,89 +378,92 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
        $this->Image->invalidateField('upload','Erreur lors de l\'upload du fichier');
       }
     }
-	else // autoscan
+	else 
 	{
-		$this->Image->create();
-		$data = array();
-		$data['Image']['name'] = basename($path);
-		$data['Image']['fullPath'] = $path;
-		$data['Image']['status'] = Configure::read('Digikam.Enum.Image.status');
-		$data['Image']['category'] = Configure::read('Digikam.Enum.Image.Category.image');
-		$data['Image']['modificationDate'] = date('c');
-		$data['Image']['fileSize'] = filesize($path);
-		$data['Image']['uniqueHash'] = $this->Image->uniqueHashV2($data);
-		
-		
-		$albumRoot = $this->Image->Album->AlbumRoot->find('first', array('conditions'=>array('id'=>Configure::read('Digikam.defaultAlbumRoot'))));
-		
-		// find albums path
-		// ROOT/album1/alb2/test/pic1.jpg
-		$albumPath = str_replace(Configure::read('Digikam.root').$albumRoot['AlbumRoot']['specificPath'],'',$path);
-		// /album1/alb2/test/pic1.jpg
-		$albumPath = str_replace('/'.basename($path),'',$albumPath);
-		// /album1/alb2/test
-		
-		
-		$albumsList = explode('/', $albumPath);
-		// album1, alb2, test
-		
-		$tmpAlbumPath = '';
-		$tmpAlbumData = array();
-		foreach($albumsList as $albumName)
+		if($path != NULL)// autoscan
 		{
-			if($tmpAlbumPath != '/')
-			{
-				$tmpAlbumPath .= '/';
-			}
-			$tmpAlbumPath .= $albumName;
-			$tmpAlbum = $this->Image->Album->find('first', array('conditions'=>array('relativePath'=>$tmpAlbumPath)));
+			$this->Image->create();
+			$data = array();
+			$data['Image']['name'] = basename($path);
+			$data['Image']['fullPath'] = $path;
+			$data['Image']['status'] = Configure::read('Digikam.Enum.Image.status');
+			$data['Image']['category'] = Configure::read('Digikam.Enum.Image.Category.image');
+			$data['Image']['modificationDate'] = date('c');
+			$data['Image']['fileSize'] = filesize($path);
+			$data['Image']['uniqueHash'] = $this->Image->uniqueHashV2($data);
 			
-			if(!isset($tmpAlbum['Album']['id']))
+			
+			$albumRoot = $this->Image->Album->AlbumRoot->find('first', array('conditions'=>array('id'=>Configure::read('Digikam.defaultAlbumRoot'))));
+			
+			// find albums path
+			// ROOT/album1/alb2/test/pic1.jpg
+			$albumPath = str_replace(Configure::read('Digikam.root').$albumRoot['AlbumRoot']['specificPath'],'',$path);
+			// /album1/alb2/test/pic1.jpg
+			$albumPath = str_replace('/'.basename($path),'',$albumPath);
+			// /album1/alb2/test
+			
+			
+			$albumsList = explode('/', $albumPath);
+			// album1, alb2, test
+			
+			$tmpAlbumPath = '';
+			$tmpAlbumData = array();
+			foreach($albumsList as $albumName)
 			{
-				$this->Image->Album->create();
-				$tmpAlbumData = array('Album'=>array(
-							'albumRoot' => Configure::read('Digikam.defaultAlbumRoot'),
-							'date' => date('c'),
-							'relativePath' => $tmpAlbumPath
-						));
-				$this->log('creating album '.$tmpAlbumPath, 'debug');
-				$this->Image->Album->save($tmpAlbumData);
-				// $tmpAlbumData['Album']['id'] = $this->Image->Album->getInsertID();
-				$albumId = $this->Image->Album->getInsertID();
+				if($tmpAlbumPath != '/')
+				{
+					$tmpAlbumPath .= '/';
+				}
+				$tmpAlbumPath .= $albumName;
+				$tmpAlbum = $this->Image->Album->find('first', array('conditions'=>array('relativePath'=>$tmpAlbumPath)));
 				
+				if(!isset($tmpAlbum['Album']['id']))
+				{
+					$this->Image->Album->create();
+					$tmpAlbumData = array('Album'=>array(
+								'albumRoot' => Configure::read('Digikam.defaultAlbumRoot'),
+								'date' => date('c'),
+								'relativePath' => $tmpAlbumPath
+							));
+					$this->log('creating album '.$tmpAlbumPath, 'debug');
+					$this->Image->Album->save($tmpAlbumData);
+					// $tmpAlbumData['Album']['id'] = $this->Image->Album->getInsertID();
+					$albumId = $this->Image->Album->getInsertID();
+					
+				}
+				else
+				{
+					$albumId = $tmpAlbum['Album']['id'];
+				}
 			}
-			else
+			
+			$tmpImage = $this->Image->find('first', array('conditions'=>array(
+				'uniqueHash' => $data['Image']['uniqueHash'],
+				'album' => $albumId
+				)));
+			if(isset($tmpImage['Image']['id']))
 			{
-				$albumId = $tmpAlbum['Album']['id'];
+				$this->log('Image already known #'.$tmpImage['Image']['id'], 'debug');
+				return false;
 			}
+			
+			// debug($data);
+			$data['Image']['album'] = $albumId;
+			
+			if ( $this->Image->save($data)) {
+			  $this->Session->setFlash(__('The photo has been saved'),'flash/ok');
+			  $data['Image']['id'] = $this->Image->getInsertID();
+			 $this->fillExifData($data);
+			 
+				if(isset($data['ImagePosition']['imageid']))
+				{
+					$this->Image->ImagePosition->save($data);
+				}
+				$this->Image->ImageInformation->save($data);
+				$this->Image->ImageMetadata->save($data);
+			 return true;
+			 }
 		}
-		
-		$tmpImage = $this->Image->find('first', array('conditions'=>array(
-			'uniqueHash' => $data['Image']['uniqueHash'],
-			'album' => $albumId
-			)));
-		if(isset($tmpImage['Image']['id']))
-		{
-			$this->log('Image already known #'.$tmpImage['Image']['id'], 'debug');
-			return false;
-		}
-		
-		// debug($data);
-		$data['Image']['album'] = $albumId;
-		
-		if ( $this->Image->save($data)) {
-		  $this->Session->setFlash(__('The photo has been saved'),'flash/ok');
-		  $data['Image']['id'] = $this->Image->getInsertID();
-		 $this->fillExifData($data);
-		 
-			if(isset($data['ImagePosition']['imageid']))
-			{
-				$this->Image->ImagePosition->save($data);
-			}
-			$this->Image->ImageInformation->save($data);
-			$this->Image->ImageMetadata->save($data);
-		 return true;
-		 }
 	}
 	$albums = $this->Image->Album->find('list');
     $this->set(compact('albums'));
