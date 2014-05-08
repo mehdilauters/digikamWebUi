@@ -1,3 +1,4 @@
+SetEnv PHP_VER 5_4
 # AuthName "Restricted Area" 
 # AuthType Basic 
 # AuthUserFile /home/mehdi/Mehdi/Programmes/www/protected/.htpasswd 

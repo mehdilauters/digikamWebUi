@@ -23,7 +23,8 @@
 <head>
   <?php echo $this->Html->charset(); ?>
   <title>
-    DigikamWebUi
+    <?php echo Configure::read('Digikam.title'); ?>
+    
     <?php echo $title_for_layout; ?>
   </title>
   <?php
@@ -59,7 +60,7 @@
 <body>
   <div id="container" class="container-fluid">
     <div id="header" class="row-fluid">
-      <h1>Digikam Web Ui</h1>
+      <h1><?php echo Configure::read('Digikam.title'); ?></h1>
       <?php if($this->Session->check('Auth.User')){
   ?>
   <span>logout <a href="<?php echo $this->webroot ?>users/logout"><?php echo AuthComponent::user('username') ?></a></span>

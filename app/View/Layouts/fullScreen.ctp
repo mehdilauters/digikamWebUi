@@ -23,7 +23,8 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-  DigikamWebUi
+  <?php echo Configure::read('Digikam.title'); ?>
+  <?php echo $title_for_layout; ?>
     <?php echo $title_for_layout; ?>
 	</title>
 	<?php

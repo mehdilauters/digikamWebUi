@@ -187,7 +187,7 @@ class TagsController extends AppController {
     function beforeFilter() {
     parent::beforeFilter();
     $this->Auth->allow('view'); 
-	$this->Auth->allow('map');
-	$this->Auth->allow('slideshow');
+    $this->Auth->allow('map');
+    $this->Auth->allow('slideshow');
   }
 }

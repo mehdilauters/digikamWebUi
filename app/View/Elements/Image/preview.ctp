@@ -85,6 +85,7 @@ if( isset($size) && $size == 'max' )
     <a id="imageLink_<?php echo $data['id']?>" href="<?php echo $this->webroot.'images/download/'.$data['id'].'/' ?>" title="<?php echo $data['name'] ?>"  rel="album" class="fancybox" >
     <img id="imagePreview_<?php echo $data['id']?>" class="imagePreview preview_<?php echo $preview ?>" src="<?php echo $this->webroot.'images/download/'.$data['id'].'/'.$preview ?>" alt="<?php echo $data['name'] ?>" />
     </a>
+    <?php if( AuthComponent::user('id') == Configure::read('Digikam.rootUser') ): ?>
 	<ul>
 		<li>
 			<a href="<?php echo $this->webroot.'images/edit/'.$data['id'] ?>" >Edit</a>
@@ -99,6 +100,7 @@ if( isset($size) && $size == 'max' )
 			<?php echo $this->Form->postLink(__('rotate right'), array('controller'=>'images', 'action' => 'rotate', $data['id'], 270), null, __('Are you sure you want to rotate right # %s?', $data['id'])); ?>
 		</li>
 	<ul>
+    <?php endif; ?>
   </div>
   <?php 
   if($rating)

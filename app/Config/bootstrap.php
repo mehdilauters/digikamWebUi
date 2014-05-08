@@ -109,6 +109,8 @@ CakeLog::config('error', array(
 ));
   
   CakePlugin::load('DebugKit');
+
+Configure::write('Digikam.title', 'DigikamWebUi');
   
   // this path will be prepended to the AlbumRoot.specificPath from the digikam database to get the complete path to the album.
   Configure::write('Digikam.root', '');

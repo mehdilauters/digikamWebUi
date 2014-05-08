@@ -263,5 +263,6 @@ class AlbumsController extends AppController {
 		$this->Auth->allow('getTree');
 		$this->Auth->allow('view');
 		$this->Auth->allow('slideshow');
+		$this->Auth->allow('map');
 	}
 }
