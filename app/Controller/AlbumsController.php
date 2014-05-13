@@ -100,6 +100,61 @@ class AlbumsController extends AppController {
 	$this->layout = 'fullScreen';
   }
   
+  
+  public function download($id = null)
+  {
+	$this->view($id);
+	// $indexView = new View($this, false);
+	// $indexView->layout = 'fullScreen';
+	// $html = $indexView->render('view'); // get the rendered markup
+	$zip = new ZipArchive();
+
+	
+	$this->viewClass = 'Media';
+	
+	$album = $this->viewVars['album'];
+	$albumName = $this->viewVars['album']['Album']['relativePath'];
+	$albumName = preg_replace('/(\s*)|(\/*)/','_', $albumName);
+	$filename = TMP.$albumName.'.zip';
+
+	
+	if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
+		$this->log('cannot create '.$filename, 'debug');
+	}
+	
+	// $zip->addFromString("index.html", $html);
+
+	
+	$file_parts = pathinfo($filename);
+	
+	
+	foreach ($album['Image'] as $id => $image)
+	{
+		$image = $this->Album->Image->findById($image['id']);
+		$image = $this->Album->Image->getPath($image);
+		$zip->addFile($image['Image']['fullPath'], $image['Image']['name']);
+	}
+	$zip->close();
+	
+	 $params = array(
+        'id'        => basename($file_parts['basename']),
+        'name'      => basename($file_parts['basename']),
+        'extension' => $file_parts['extension'],
+        'mimeType'  => array(
+        'image/jpeg'),
+//         'download' => true,
+        'path'      => $file_parts['dirname'].DS,
+        'cache' => true
+    );
+	
+	$this->set($params);
+	
+	$this->render();
+	
+	unlink($filename);
+	
+  }
+  
 /**
  * view method
  *
@@ -153,10 +208,6 @@ class AlbumsController extends AppController {
 	$maxDate = $minDate;
 	foreach($album['Image'] as $image)
 	 {
-		if(!isset($image['ImageInformation']['creationDate']))
-		{
-			debug($image);
-		}
 		$imageDate = new DateTime($image['ImageInformation']['creationDate']);
 		if( $minDate == NULL )
 		{
