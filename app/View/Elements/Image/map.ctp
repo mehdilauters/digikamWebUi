@@ -24,7 +24,61 @@
 	<div></div>
 </div>
 
-<script>var boundingBox = new google.maps.LatLngBounds();</script>
+<script>var boundingBox = new google.maps.LatLngBounds();
+
+var zoomLevel = 1;
+var initIcon = [];
+function updateMarkersIcon()
+{
+	var prevZoomLevel = zoomLevel;
+	
+
+
+	var zoom = map_canvas.getZoom();
+	if( zoom > 15 )
+	{
+		zoomLevel = 3;
+	}
+	else
+	{
+		if( zoom >  10 )
+		{
+			zoomLevel = 2;
+		}
+		else
+		{
+				zoomLevel = 1;
+		}
+	}
+	 if (prevZoomLevel !== zoomLevel) {	
+
+		for (i = 0; i < markers.length; i++) {
+			var iconUrl = markers[i].getIcon();
+			if (typeof initIcon[i] == 'undefined')
+			{
+				initIcon[i] = iconUrl;
+			}
+			iconUrl = initIcon[i];
+			
+			switch(zoomLevel)
+			{
+				case 3:
+					iconUrl += 'Big'
+				break;
+				case 2:
+				break;
+				
+				case 1:
+					iconUrl += 'Small'
+				break;
+			}
+		  markers[i].setIcon(iconUrl);
+		 }
+	 }
+}
+
+
+</script>
 
 <?php echo $this->Html->script('http://maps.google.com/maps/api/js?sensor=true', false); ?>
 <?php 
@@ -89,10 +143,25 @@ foreach($images as $image)
 			  , array(
 			'markerTitle' => $data['name'],
 			'markerIcon' => Router::url('/images/download/'.$data['id'].'/icon', true),
-			'infoWindow' => true,
-			'windowText' => preg_replace('/\s+/', ' ',$this->element('Image/preview', array('image'=>$image))),
+			 'infoWindow' => false,
+			// 'windowText' => preg_replace('/\s+/', ' ',$this->element('Image/preview', array('image'=>$image))),
 		)
 		);
+		
+		
+		
+			?>
+	
+	<script>
+	google.maps.event.addListener(markers[<?php echo $i ?>], 'click', function() {
+		$('#imageLink_<?php echo $data['id'] ?>').trigger("click");
+		
+  });
+
+	</script>
+	
+	<?php
+		
 		
 	if($i > 0)
 	{
@@ -137,7 +206,9 @@ foreach($images as $image)
 		$data = $image['Image'];
 	}
  ?>
+ <img class="imageLoading" src="<?php echo $this->webroot ?>images/download/<?php echo $data['id'] ?>/iconBig" />
  <img class="imageLoading" src="<?php echo $this->webroot ?>images/download/<?php echo $data['id'] ?>/icon" />
+ <img class="imageLoading" src="<?php echo $this->webroot ?>images/download/<?php echo $data['id'] ?>/iconSmall" />
  <img class="imageLoading" src="<?php echo $this->webroot ?>images/download/<?php echo $data['id'] ?>/big" />
  <?php
    echo $this->element('Image/preview', array('image'=>$image));
@@ -229,7 +300,7 @@ $(function() {
 map_canvas.fitBounds(boundingBox);
 
 
-
+/*
 $(".imageLoading").load(function() {
   nbLoadedImages ++;
   if(nbLoadedImages == <?php echo count($images) ?>)
@@ -239,7 +310,7 @@ $(".imageLoading").load(function() {
 }).each(function() {
   if(this.complete) $(this).load();
 });
-
+*/
 
 var nbDaysDifferenceCount = nbDaysDifference.length;
 	for (var i = 0; i < nbDaysDifferenceCount-1; i++) {
@@ -253,9 +324,14 @@ var nbDaysDifferenceCount = nbDaysDifference.length;
 $( "#mapSlider" ).slider({
 		slide:slideUpdated,
 		change:slideUpdated,
+		value: <?php echo $dateDiff->days+1 ?>,
         min: 0,
         max: <?php echo $dateDiff->days+1 ?>,
 		});
 		
 });
+
+
+google.maps.event.addListener(map_canvas, 'zoom_changed', updateMarkersIcon);
+
 </script>

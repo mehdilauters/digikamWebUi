@@ -32,7 +32,7 @@ App::uses('Controller', 'Controller');
  * @link    http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-  var $components    = array('DebugKit.Toolbar','Session','Auth'=>array('Form' => array()),'RequestHandler', 'Cookie');
+  var $components    = array(/*'DebugKit.Toolbar',*/'Session','Auth'=>array('Form' => array()),'RequestHandler', 'Cookie');
   var $helpers = array('MyHtml');
   var $uses = array('User');
 
@@ -65,6 +65,13 @@ class AppController extends Controller {
   }
   
   function beforeFilter() {
+  
+  	if($this->Session->check('debugMode') && $this->Session->read('debugMode'))
+	{
+      $this->set('debugMode',true);
+      Configure::write('debug', 2);
+    }
+  
 	static $firstCall = true;
     parent::beforeFilter();
     $this->Auth->authError = "Sorry, this page is not available for you!";

@@ -14,7 +14,10 @@
 /dist
 /tags
 *.db
-upload.sh
+upload.*
+app/Version.txt
+app/uploadDate.txt
+
 
 # OS generated files #
 ######################

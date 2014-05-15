@@ -118,9 +118,18 @@ Configure::write('Digikam.title', 'DigikamWebUi');
   
   Configure::write('Digikam.defaultAlbumRoot', 1);
   
+  
+  Configure::write('Image.preview.iconBig.maxWidth', 192);
+  Configure::write('Image.preview.iconBig.maxHeight', 192);
+  Configure::write('Image.preview.iconBig.cachePrefix', 'previewIconBig_');
+  
   Configure::write('Image.preview.icon.maxWidth', 96);
   Configure::write('Image.preview.icon.maxHeight', 96);
   Configure::write('Image.preview.icon.cachePrefix', 'previewIcon_');
+  
+  Configure::write('Image.preview.iconSmall.maxWidth', 48);
+  Configure::write('Image.preview.iconSmall.maxHeight', 48);
+  Configure::write('Image.preview.iconSmall.cachePrefix', 'previewIconSmall_');
   
   Configure::write('Image.preview.small.maxWidth', 300);
   Configure::write('Image.preview.small.maxHeight', 200);
