@@ -1,4 +1,19 @@
-<div id="slideshowContainer">	
+<div id="slideshowContainer">
+	<ul id="imgList" >
+	<?php foreach($images as $image)
+	{
+		$data = $image;
+		if(isset($image['Image']))
+		{
+			$data = $image['Image'];
+		}
+		?>
+		<li> <a href="#slide_<?php echo $data['id'] ?>"> <?php echo $data['name'] ?> </a></li>
+		<?php
+		
+	}
+ ?>
+	</ul>
   <?php foreach($images as $image)
  {
  	$data = $image;
@@ -8,6 +23,7 @@
 	}
  ?>
  <div class="imageSlideshow" style="background-image: url(&quot;<?php echo $this->webroot ?>images/download/<?php echo $data['id'].'/big' ?>&quot;)" >
+ <a name="slide_<?php echo $data['id'] ?>" />
 	<div class="slideshowImageInfo">
 		<div class="date">
 		<?php $date = new DateTime($image['ImageInformation']['creationDate']); ?>
@@ -26,6 +42,7 @@
 			{ ?>
 				<img src="http://maps.google.com/maps/api/staticmap?zoom=4&markers=size:mid|<?php echo $image['ImagePosition']['latitudeNumber']; ?>,<?php echo $image['ImagePosition']['longitudeNumber']; ?>&maptype=hybrid&size=250x150&sensor=false" />
 			<?php } ?>
+			<a href="<?php echo $this->webroot.'images/download/'.$data['id'] ?>" >Download</a>
 		</div>
 		<div style="clear: both"></div>
 	</div>

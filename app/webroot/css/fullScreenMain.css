@@ -91,3 +91,27 @@ width: 5%;
 {
 	display:none;
 }
+
+
+#imgList
+{
+	background-color:rgba( 10, 10, 10, 0.7);
+	position: fixed;
+	top: 1%;
+	max-width: 30%;
+	padding: 1%;
+	height:60%;
+	z-index: 1;
+	overflow-x : hidden;
+	overflow-y : auto;
+	
+	opacity: 0.2;
+    filter: alpha(opacity=20); /* For IE8 and earlier */
+	
+}
+
+#imgList:hover
+{
+	opacity: 0.9;
+    filter: alpha(opacity=90); /* For IE8 and earlier */
+}
