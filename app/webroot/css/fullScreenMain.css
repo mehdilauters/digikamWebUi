@@ -55,11 +55,13 @@ html,body,#content
 	min-height: 100%;
 	position: relative;
 	width: 100%;
-	background-image: no-repeat center;
-	 -webkit-background-size: cover; /* pour Chrome et Safari */
-  -moz-background-size: cover; /* pour Firefox */
-  -o-background-size: cover; /* pour Opera */
-  background-size: cover; /* version standardisée */
+	background-color: black;
+	background-repeat: no-repeat;
+	background-position: center;
+	 -webkit-background-size: contain; /* pour Chrome et Safari */
+	-moz-background-size: contain; /* pour Firefox */
+	-o-background-size: contain; /* pour Opera */
+	background-size: contain; /* version standardisée */
 }
 
 
