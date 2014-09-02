@@ -437,12 +437,23 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 				}
 			}
 			
-			$tmpImage = $this->Image->find('first', array('conditions'=>array(
+			$tmpImage = $this->Image->find('first', array('conditions'=>array( 'OR' => array(
 				'uniqueHash' => $data['Image']['uniqueHash'],
 				'album' => $albumId
-				)));
+				),
+				 array(
+				  'name' => $data['Image']['name'],
+				  'album' => $albumId
+				  )
+				)
+				  ));
 			if(isset($tmpImage['Image']['id']))
 			{
+				if($tmpImage['Image']['uniqueHash'] != $data['Image']['uniqueHash'])
+				{
+				  $tmpImage['Image']['uniqueHash'] = $data['Image']['uniqueHash'];
+				  $this->Image->save($data);
+				}
 				$this->log('Image already known #'.$tmpImage['Image']['id'], 'debug');
 				return false;
 			}
