@@ -49,7 +49,9 @@ To install the web interface in X steps:
     That's all for this one
     - The WebUi one (user management, user rights...)
         - Schema creation
-            The SQL file to execute is app/Model/Datasource/digikamWebUi.sql
+            The SQL file to load is app/Config/Schema/digikamWebUi.sql.
+            For example:
+                cat app/Config/Schema/digikamWebUi.sql | sqlite3 PATH/TO/A/NEW/DATABASE/digikamWebUi.db
         - CakePhp configuration
             public $digikamWebUi = array(
                 'datasource' => 'Database/Sqlite',
