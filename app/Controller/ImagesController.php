@@ -164,7 +164,6 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
   
   private function fillExifData(&$data)
   {
-  
    $imgInfo = getimagesize($data['Image']['fullPath']);
 		  // debug($imgInfo);
 
@@ -175,8 +174,8 @@ public $uses = array('Image','UniqueHash','ImageInformation', 'ImageTag', 'Tag')
 		  $data['ImageMetadata']['imageid'] = $data['Image']['id'];
 		  if($exifData != false)
 		  {
-			  
-			 $type = strtoupper ( explode('/',$exifData['FILE']['MimeType'])[1] ) ;
+			  $type = explode('/',$exifData['FILE']['MimeType']);
+			 $type = strtoupper ( $type[1] ) ;
 			  
 			  $data['ImageInformation']['rating'] = -1;
 			  $data['ImageInformation']['creationDate'] = $exifData['EXIF']['DateTimeOriginal'];
