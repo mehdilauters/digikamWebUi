@@ -50,6 +50,7 @@ class MyHtmlHelper extends HtmlHelper {
 	
 	function escapeLink($title)
 	{
+		return rawurlencode($title);
 	
 		$replace=array(' ','ê','é','&','"','\'','(','è','ç','à',')','=','+','~','#','{','[','|','`','\\','^','@',']','î','ï','ô');
 		$by=array('-','e','e','-','-','-','-','e','c','a','-','-','-','-','-','-','-','-','-','-','-','-','-','i','i','o');
