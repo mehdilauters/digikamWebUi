@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS `users`;
 -- alter table users add rating boolean DEFAULT false, tagging boolean DEFAULT false,
 
 create table if not exists users (
-  `id` integer PRIMARY KEY ,
+  `id` integer PRIMARY KEY AUTO_INCREMENT ,
   username varchar(255) not null,
   password varchar(255) ,
   rating boolean DEFAULT false,
@@ -22,7 +22,7 @@ create table if not exists users (
 );
 
 create table if not exists users_available_tags (
-  `id` integer PRIMARY KEY ,
+  `id` integer PRIMARY KEY AUTO_INCREMENT ,
   `user_id` integer NOT NULL ,
   `tag_id` integer NOT NULL ,
   `created` datetime DEFAULT NULL,
@@ -30,7 +30,7 @@ create table if not exists users_available_tags (
 );
 
 create table if not exists users_available_albums (
-  `id` integer PRIMARY KEY ,
+  `id` integer PRIMARY KEY AUTO_INCREMENT ,
   `user_id` integer NOT NULL ,
   `album_id` integer NOT NULL ,
   `created` datetime DEFAULT NULL,
@@ -38,7 +38,7 @@ create table if not exists users_available_albums (
 );
 
 create table if not exists users_forbidden_tags (
-  `id` integer PRIMARY KEY ,
+  `id` integer PRIMARY KEY AUTO_INCREMENT ,
   `user_id` integer NOT NULL ,
   `tag_id` integer NOT NULL ,
   `created` datetime DEFAULT NULL,
@@ -46,11 +46,11 @@ create table if not exists users_forbidden_tags (
 );
 
 create table if not exists users_forbidden_albums (
-  `id` integer PRIMARY KEY ,
+  `id` integer PRIMARY KEY AUTO_INCREMENT ,
   `user_id` integer NOT NULL ,
   `album_id` integer NOT NULL ,
   `created` datetime DEFAULT NULL,
   FOREIGN KEY(user_id) REFERENCES users(id)
   );
   
-  insert into users (id, username, password, created) values (1, "public","", CURRENT_TIMESTAMP);
+  insert into users (username, password, created) values ("public","", CURRENT_TIMESTAMP);
